@@ -1,0 +1,60 @@
+{
+  "name": "CLEVORISE OS - Autonomous Business Operations",
+  "short_name": "CLEVORISE OS",
+  "description": "Zero-human-interference business operating system for UK small businesses.",
+  "start_url": "/kallisto_os/index.html",
+  "scope": "/kallisto_os/",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#0ea5e9",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/assets/images/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/images/og-preview.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Self-Ordering Kiosk",
+      "short_name": "Kiosk",
+      "description": "Launch full-screen customer ordering menu",
+      "url": "/kallisto_os/self-ordering.html",
+      "icons": [{ "src": "/assets/images/favicon-32x32.png", "sizes": "32x32" }]
+    },
+    {
+      "name": "Kitchen Display (KDS)",
+      "short_name": "Kitchen",
+      "description": "Live food and beverage order fulfillment board",
+      "url": "/kallisto_os/kitchen-display.html",
+      "icons": [{ "src": "/assets/images/favicon-32x32.png", "sizes": "32x32" }]
+    },
+    {
+      "name": "Stock Management",
+      "short_name": "Stock",
+      "description": "Multi-channel inventory and barcodes",
+      "url": "/kallisto_os/stock-management.html",
+      "icons": [{ "src": "/assets/images/favicon-32x32.png", "sizes": "32x32" }]
+    },
+    {
+      "name": "Invoice Generator",
+      "short_name": "Invoices",
+      "description": "HMRC MTD compliant tax invoices",
+      "url": "/kallisto_os/invoice-generator.html",
+      "icons": [{ "src": "/assets/images/favicon-32x32.png", "sizes": "32x32" }]
+    }
+  ]
+}

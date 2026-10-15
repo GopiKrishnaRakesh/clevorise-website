@@ -1,0 +1,832 @@
+/* ==========================================================================
+   KALLISTO OS - MASTER CONSOLIDATED APPLICATION STYLESHEET
+   Includes Design Tokens, White-Label Themes, Components, and Layout Grids
+   ========================================================================== */
+
+/* --- 1. DESIGN TOKENS & CLIENT PRESETS --- */
+/* ==========================================================================
+   KALLISTO OS - REUSABLE WHITE-LABEL DESIGN TOKENS
+   Modular, Minimal, Multi-Tenant Design System for UK Small Businesses
+   ========================================================================== */
+
+:root {
+  /* Default Brand Identity (Kallisto Executive Amber / International Orange) */
+  --brand-primary: #ff5d00;
+  --brand-primary-hover: #e65300;
+  --brand-primary-light: rgba(255, 93, 0, 0.08);
+  --brand-primary-border: rgba(255, 93, 0, 0.25);
+  
+  /* Neutral Canvas & Surfaces */
+  --surface-bg: #f8fafc;
+  --surface-card: #ffffff;
+  --surface-card-hover: #f1f5f9;
+  --surface-card-elevated: #ffffff;
+  --surface-sidebar: #0f172a;
+  --surface-sidebar-hover: #1e293b;
+  --surface-sidebar-active: #334155;
+  
+  /* Semantic High-Contrast Typography */
+  --text-primary: #0f172a;     /* Slate 900 (>12:1 contrast) */
+  --text-secondary: #334155;   /* Slate 700 (>8:1 contrast) */
+  --text-muted: #64748b;       /* Slate 500 (>4.8:1 contrast) */
+  --text-inverse: #f8fafc;
+  --text-inverse-muted: #94a3b8;
+  
+  /* Status & Operational Indicators */
+  --status-success: #10b981;
+  --status-success-bg: #ecfdf5;
+  --status-success-text: #065f46;
+  --status-warning: #f59e0b;
+  --status-warning-bg: #fffbeb;
+  --status-warning-text: #92400e;
+  --status-danger: #ef4444;
+  --status-danger-bg: #fef2f2;
+  --status-danger-text: #991b1b;
+  --status-info: #0284c7;
+  --status-info-bg: #f0f9ff;
+  --status-info-text: #075985;
+  
+  /* Optical Meniscus & Borders */
+  --border-subtle: #e2e8f0;
+  --border-medium: #cbd5e1;
+  --border-focus: var(--brand-primary);
+  
+  /* Shadows & Elevation */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+  --shadow-card: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9), 0 1px 3px rgba(15, 23, 42, 0.06), 0 10px 24px -8px rgba(15, 23, 42, 0.04);
+  
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+  
+  /* Typography Scale */
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  
+  /* Layout Dimensions */
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 72px;
+  --header-height: 64px;
+  --content-max-width: 1440px;
+}
+
+/* ==========================================================================
+   CLIENT PRESET THEMES (WHITE-LABEL CUSTOMIZATION)
+   ========================================================================== */
+
+/* 1. Cafe & Hospitality Preset: "Bloom & Roast Espresso" */
+[data-client-theme="cafe"] {
+  --brand-primary: #b45309;          /* Rich Amber Roasted Bean */
+  --brand-primary-hover: #92400e;
+  --brand-primary-light: rgba(180, 83, 9, 0.08);
+  --brand-primary-border: rgba(180, 83, 9, 0.25);
+  --surface-bg: #faf7f2;             /* Creamy warm linen canvas */
+  --surface-card: #ffffff;
+  --surface-sidebar: #1c1917;        /* Warm dark roasted stone */
+  --surface-sidebar-hover: #292524;
+  --surface-sidebar-active: #44403c;
+}
+
+/* 2. Boutique Retail Preset: "The Harrogate Studio" */
+[data-client-theme="retail"] {
+  --brand-primary: #0284c7;          /* Cobalt Indigo Artisan Dye */
+  --brand-primary-hover: #0369a1;
+  --brand-primary-light: rgba(2, 132, 199, 0.08);
+  --brand-primary-border: rgba(2, 132, 199, 0.25);
+  --surface-bg: #f8fafc;
+  --surface-card: #ffffff;
+  --surface-sidebar: #090d16;        /* Deep obsidian retail slate */
+  --surface-sidebar-hover: #131b2e;
+  --surface-sidebar-active: #1e293b;
+}
+
+/* 3. Professional Advisory & Services Preset: "Soho Growth Partners" */
+[data-client-theme="services"] {
+  --brand-primary: #4f46e5;          /* Electric Indigo */
+  --brand-primary-hover: #4338ca;
+  --brand-primary-light: rgba(79, 70, 229, 0.08);
+  --brand-primary-border: rgba(79, 70, 229, 0.25);
+  --surface-bg: #f5f7fa;
+  --surface-card: #ffffff;
+  --surface-sidebar: #0f172a;
+  --surface-sidebar-hover: #1e293b;
+  --surface-sidebar-active: #312e81;
+}
+
+/* 4. Gym & Fitness Preset: "Apex Athletic Club" */
+[data-client-theme="fitness"] {
+  --brand-primary: #84cc16;          /* Electric Lime */
+  --brand-primary-hover: #65a30d;
+  --brand-primary-light: rgba(132, 204, 22, 0.12);
+  --brand-primary-border: rgba(132, 204, 22, 0.35);
+  --surface-bg: #f4f4f5;
+  --surface-card: #ffffff;
+  --surface-sidebar: #09090b;        /* Charcoal Obsidian */
+  --surface-sidebar-hover: #18181b;
+  --surface-sidebar-active: #27272a;
+}
+
+/* 5. Hair & Beauty Salon Preset: "Aura Aesthetics & Spa" */
+[data-client-theme="salon"] {
+  --brand-primary: #e11d48;          /* Rose Quartz / Luxury Berry */
+  --brand-primary-hover: #be123c;
+  --brand-primary-light: rgba(225, 29, 72, 0.08);
+  --brand-primary-border: rgba(225, 29, 72, 0.25);
+  --surface-bg: #fff5f6;             /* Warm Champagne Blush */
+  --surface-card: #ffffff;
+  --surface-sidebar: #190a14;        /* Deep Amethyst Plum */
+  --surface-sidebar-hover: #291423;
+  --surface-sidebar-active: #3e1e35;
+}
+
+/* 6. Trade Services & Engineering Preset: "Vanguard Electrical & Heating" */
+[data-client-theme="trades"] {
+  --brand-primary: #d97706;          /* High-Vis Industrial Amber */
+  --brand-primary-hover: #b45309;
+  --brand-primary-light: rgba(217, 119, 6, 0.08);
+  --brand-primary-border: rgba(217, 119, 6, 0.3);
+  --surface-bg: #f1f5f9;
+  --surface-card: #ffffff;
+  --surface-sidebar: #0f172a;        /* Tough Technical Gunmetal */
+  --surface-sidebar-hover: #1e293b;
+  --surface-sidebar-active: #334155;
+}
+
+
+
+/* --- 2. COMPONENT LIBRARY --- */
+/* ==========================================================================
+   KALLISTO OS - REUSABLE UI COMPONENT LIBRARY
+   Minimal, Accessible, Distraction-Free Business Controls
+   ========================================================================== */
+
+/* 1. Base Reset & Typography Helpers */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body.os-body {
+  font-family: var(--font-sans);
+  background-color: var(--surface-bg);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  overflow-x: hidden;
+}
+
+/* 2. Layout Structure (Sidebar + Main Content) */
+.os-layout {
+  display: flex;
+  width: 100vw;
+  min-height: 100vh;
+}
+
+.os-sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--surface-sidebar);
+  color: var(--text-inverse);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 40;
+  transition: width 0.2s ease;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.os-sidebar-header {
+  height: var(--header-height);
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.os-brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.os-brand-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--brand-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+}
+
+.os-sidebar-nav {
+  flex: 1;
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  overflow-y: auto;
+}
+
+.os-nav-section-title {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-inverse-muted);
+  padding: 0.75rem 0.5rem 0.25rem;
+}
+
+.os-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--radius-md);
+  color: var(--text-inverse-muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.os-nav-item:hover {
+  background-color: var(--surface-sidebar-hover);
+  color: #ffffff;
+}
+
+.os-nav-item.active {
+  background-color: var(--brand-primary);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.os-nav-item .material-symbols-outlined {
+  font-size: 1.25rem;
+}
+
+.os-sidebar-footer {
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.os-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: var(--surface-bg);
+}
+
+.os-topbar {
+  height: var(--header-height);
+  background-color: var(--surface-card);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.75rem;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.os-page-content {
+  flex: 1;
+  padding: 1.75rem;
+  max-width: var(--content-max-width);
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* 3. Cards & Surfaces */
+.os-card {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 1.5rem;
+  position: relative;
+}
+
+.os-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.os-card-title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.os-card-desc {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin-top: 0.125rem;
+}
+
+/* 4. Stat & Metric Widgets */
+.os-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.os-stat-card {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.os-stat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.os-stat-value {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin: 0.35rem 0;
+}
+
+.os-stat-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.os-stat-trend.positive { color: var(--status-success); }
+.os-stat-trend.negative { color: var(--status-danger); }
+.os-stat-trend.neutral { color: var(--text-muted); }
+
+/* 5. Minimal Buttons */
+.os-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.os-btn-primary {
+  background-color: var(--brand-primary);
+  color: #ffffff;
+  box-shadow: var(--shadow-xs);
+}
+
+.os-btn-primary:hover {
+  background-color: var(--brand-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.os-btn-secondary {
+  background-color: #ffffff;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-medium);
+}
+
+.os-btn-secondary:hover {
+  background-color: var(--surface-bg);
+  color: var(--text-primary);
+}
+
+.os-btn-sm {
+  padding: 0.45rem 0.85rem;
+  font-size: 0.75rem;
+  border-radius: var(--radius-sm);
+}
+
+.os-btn-danger {
+  background-color: var(--status-danger-bg);
+  color: var(--status-danger-text);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.os-btn-danger:hover {
+  background-color: var(--status-danger);
+  color: #ffffff;
+}
+
+/* 6. Form Controls */
+.os-form-group {
+  margin-bottom: 1rem;
+}
+
+.os-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.375rem;
+}
+
+.os-input, .os-select, .os-textarea {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  background-color: #ffffff;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 0.625rem 0.875rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+
+.os-input:focus, .os-select:focus, .os-textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--brand-primary-light);
+}
+
+/* 7. Data Tables */
+.os-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background-color: #ffffff;
+}
+
+.os-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.os-table th {
+  background-color: #f8fafc;
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.os-table td {
+  padding: 0.875rem 1rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+}
+
+.os-table tr:last-child td {
+  border-bottom: none;
+}
+
+.os-table tr:hover td {
+  background-color: var(--surface-bg);
+}
+
+/* 8. Status Badges & Pills */
+.os-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-full);
+}
+
+.os-badge-success { background: var(--status-success-bg); color: var(--status-success-text); }
+.os-badge-warning { background: var(--status-warning-bg); color: var(--status-warning-text); }
+.os-badge-danger { background: var(--status-danger-bg); color: var(--status-danger-text); }
+.os-badge-info { background: var(--status-info-bg); color: var(--status-info-text); }
+
+/* 9. Live Autonomous Pulse Dot */
+.os-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--status-success);
+  display: inline-block;
+  position: relative;
+}
+
+.os-pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background-color: var(--status-success);
+  opacity: 0.4;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.5; }
+  70% { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+/* 10. Responsive Breakpoints */
+@media (max-width: 900px) {
+  .os-topbar {
+    height: auto;
+    min-height: var(--header-height);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+  }
+  .os-topbar-title { min-width: 0; }
+  .os-topbar-title h1 { font-size: 1.05rem !important; }
+  .os-topbar-actions { width: 100%; gap: 0.5rem !important; }
+  .os-topbar-actions > div:first-child { flex: 1 1 auto; min-width: 0; }
+  .os-topbar-actions #client-select { width: 100% !important; min-width: 0; text-overflow: ellipsis; }
+  .os-topbar-label, .os-topbar-divider, .os-btn-label { display: none !important; }
+}
+@media (max-width: 900px) {
+  .os-sidebar {
+    position: fixed;
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-xl);
+  }
+  .os-sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+
+/* --- 3. LAYOUT & APPLICATION STYLES --- */
+/* ==========================================================================
+   KALLISTO OS - MASTER APPLICATION STYLESHEET
+   ========================================================================== */
+
+
+/* Utility Layout Grids */
+.os-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.os-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.os-grid-1-2 {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1.5rem;
+}
+
+.os-grid-2-1 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .os-grid-2, .os-grid-3, .os-grid-1-2, .os-grid-2-1 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Flexbox Helpers */
+.os-flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.os-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.os-flex-gap-sm { gap: 0.5rem; }
+.os-flex-gap-md { gap: 1rem; }
+.os-flex-gap-lg { gap: 1.5rem; }
+
+/* Micro-animations */
+.fade-in {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Kiosk & POS Canvas */
+.kiosk-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  width: 100%;
+}
+
+.kiosk-grid {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 900px) {
+  .kiosk-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Interactive Tabs */
+.os-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.os-tab-btn {
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+}
+
+.os-tab-btn:hover {
+  color: var(--text-primary);
+  background-color: var(--surface-bg);
+}
+
+.os-tab-btn.active {
+  color: var(--brand-primary);
+  background-color: var(--brand-primary-light);
+}
+
+/* Modal Overlay */
+.os-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.os-modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.os-modal-box {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2rem;
+  transform: scale(0.95);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.os-modal-overlay.open .os-modal-box {
+  transform: scale(1);
+}
+
+/* Automation Log Stream */
+.automation-log-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.automation-log-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--brand-primary);
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+}
+
+.automation-log-time {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   Responsive hardening (mobile + tablet)
+   Grid/flex children default to min-width:auto, so long text and wide tables
+   pushed pages wider than the viewport. Let them shrink and scroll internally.
+   ========================================================================== */
+.os-page-content,
+.os-card,
+.os-grid-2 > *, .os-grid-3 > *, .os-grid-1-2 > *, .os-grid-2-1 > *,
+.kiosk-grid > *,
+.os-page-content [style*="display: grid"] > *,
+.os-page-content [style*="display:grid"] > * {
+  min-width: 0;
+}
+.os-table-wrapper { max-width: 100%; -webkit-overflow-scrolling: touch; }
+.os-card-title, .os-card-desc { overflow-wrap: anywhere; }
+
+@media (max-width: 1024px) {
+  .os-page-content [style*="grid-template-columns: repeat(3"],
+  .os-page-content [style*="grid-template-columns: repeat(4"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .os-page-content { padding: 1rem !important; }
+  .os-page-content [style*="display: grid"],
+  .os-page-content [style*="display:grid"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .os-page-content .os-flex-between { flex-wrap: wrap; gap: 0.75rem; }
+  .os-tabs { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+  .os-tab-btn { flex: 0 0 auto; white-space: nowrap; }
+  .os-card { padding: 1rem; }
+}
+
+/* Mobile sidebar toggle + tap-outside backdrop */
+#toggle-mobile-sidebar { display: none; }
+.os-sidebar-backdrop { display: none; }
+@media (max-width: 900px) {
+  #toggle-mobile-sidebar { display: inline-flex; }
+  .os-sidebar { z-index: 60; }
+  .os-sidebar-backdrop.open {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    z-index: 55;
+  }
+}

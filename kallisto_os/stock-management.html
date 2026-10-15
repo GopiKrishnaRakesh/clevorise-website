@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stock & Inventory Management | CLEVORISE OS</title>
+  <meta name="description" content="Real-time multi-channel inventory control, automated supplier replenishment, and barcode generator for UK businesses."/>
+  
+  <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+  
+  <link rel="stylesheet" href="design-system/design-tokens.css"/>
+  <link rel="stylesheet" href="design-system/components.css"/>
+  <link rel="stylesheet" href="assets/css/os-theme.css"/>
+</head>
+<body class="os-body">
+
+  <div class="os-layout">
+    <aside class="os-sidebar" aria-label="Main Navigation"></aside>
+
+    <main class="os-main">
+      <header class="os-topbar"></header>
+
+      <div class="os-page-content">
+
+        <!-- Page Header -->
+        <div class="os-flex-between" style="margin-bottom: 1.5rem;">
+          <div>
+            <h2 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: var(--text-primary);">
+              Real-Time Stock & Multi-Channel Inventory
+            </h2>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+              Synchronized across physical counters, online storefronts, and store rooms. Auto-replenishes when thresholds are breached.
+            </p>
+          </div>
+          <button type="button" class="os-btn os-btn-primary" id="btn-open-add-sku-modal">
+            <span class="material-symbols-outlined text-[18px]">add</span>
+            <span>Add New Inventory SKU</span>
+          </button>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="os-stat-grid">
+          <div class="os-stat-card">
+            <div class="os-stat-label">Total Active SKUs</div>
+            <div class="os-stat-value" id="stat-total-skus">0</div>
+            <div class="os-stat-trend positive"><span>Live Catalog</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">Total Stock Valuation (Cost)</div>
+            <div class="os-stat-value" id="stat-stock-valuation">£0.00</div>
+            <div class="os-stat-trend neutral"><span>Balance Sheet Asset</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">Potential Retail Value</div>
+            <div class="os-stat-value" id="stat-retail-valuation">£0.00</div>
+            <div class="os-stat-trend positive"><span>Estimated Gross Yield</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">Low Stock Alerts (Auto-PO)</div>
+            <div class="os-stat-value" id="stat-low-stock-count" style="color: var(--status-danger);">0</div>
+            <div class="os-stat-trend negative"><span>Supplier orders triggered</span></div>
+          </div>
+        </div>
+
+        <!-- Inventory Filter Tabs & Search Bar -->
+        <div class="os-card" style="margin-bottom: 1.5rem; padding: 1.25rem;">
+          <div class="os-flex-between" style="flex-wrap: wrap; gap: 1rem;">
+            <div class="os-tabs" id="category-tabs" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">
+              <button type="button" class="os-tab-btn active" data-filter="all">All Products</button>
+              <button type="button" class="os-tab-btn" data-filter="Coffee & Roastery">Coffee</button>
+              <button type="button" class="os-tab-btn" data-filter="Dairy & Alternatives">Dairy</button>
+              <button type="button" class="os-tab-btn" data-filter="Ceramics & Retail">Ceramics</button>
+              <button type="button" class="os-tab-btn" data-filter="Bakery & Food">Bakery</button>
+            </div>
+
+            <div style="width: 260px;">
+              <input type="search" id="search-sku-input" class="os-input" placeholder="Search SKU, name, barcode..."/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inventory Table -->
+        <div class="os-card">
+          <div class="os-table-wrapper">
+            <table class="os-table">
+              <thead>
+                <tr>
+                  <th>SKU Code</th>
+                  <th>Product / Item Name</th>
+                  <th>Category</th>
+                  <th>Current Stock</th>
+                  <th>Min Safety Level</th>
+                  <th>Cost Price</th>
+                  <th>Sell Price</th>
+                  <th>Supplier</th>
+                  <th>Status</th>
+                  <th>Barcode & Action</th>
+                </tr>
+              </thead>
+              <tbody id="inventory-table-body">
+                <!-- Dynamic -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Barcode Modal -->
+  <div class="os-modal-overlay" id="barcode-modal">
+    <div class="os-modal-box" style="max-width: 440px; text-align: center;">
+      <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem;" id="barcode-modal-title">Barcode Label</h3>
+      <p style="font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 1.5rem;" id="barcode-modal-sku">SKU Code</p>
+      
+      <div id="barcode-svg-wrapper" style="margin: 1.5rem auto; display: flex; justify-content: center; background: #f8fafc; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+        <!-- SVG injected -->
+      </div>
+
+      <div style="display: flex; justify-content: center; gap: 0.75rem;">
+        <button type="button" class="os-btn os-btn-secondary" id="btn-close-barcode">Close</button>
+        <button type="button" class="os-btn os-btn-primary" onclick="window.print()">Print Label</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add New SKU Modal -->
+  <div class="os-modal-overlay" id="add-sku-modal">
+    <div class="os-modal-box" style="max-width: 600px;">
+      <div class="os-flex-between" style="margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-subtle);">
+        <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700;">Add New Inventory SKU</h3>
+        <button type="button" class="os-btn os-btn-secondary os-btn-sm" id="btn-close-add-sku">✕</button>
+      </div>
+
+      <form id="add-sku-form">
+        <div class="os-grid-2">
+          <div class="os-form-group">
+            <label class="os-label" for="new-sku-id">SKU Identifier *</label>
+            <input type="text" id="new-sku-id" class="os-input" required/>
+          </div>
+          <div class="os-form-group">
+            <label class="os-label" for="new-sku-name">Item Name *</label>
+            <input type="text" id="new-sku-name" class="os-input" required/>
+          </div>
+        </div>
+
+        <div class="os-grid-2">
+          <div class="os-form-group">
+            <label class="os-label" for="new-sku-category">Category *</label>
+            <select id="new-sku-category" class="os-select" required>
+              <option value="Coffee & Roastery">Coffee & Roastery</option>
+              <option value="Dairy & Alternatives">Dairy & Alternatives</option>
+              <option value="Ceramics & Retail">Ceramics & Retail</option>
+              <option value="Bakery & Food">Bakery & Food</option>
+              <option value="General Goods">General Goods</option>
+            </select>
+          </div>
+          <div class="os-form-group">
+            <label class="os-label" for="new-sku-stock">Initial Stock Level *</label>
+            <input type="number" id="new-sku-stock" class="os-input" required min="0"/>
+          </div>
+        </div>
+
+        <div class="os-grid-2">
+          <div class="os-form-group">
+            <label class="os-label" for="new-sku-threshold">Min Reorder Threshold *</label>
+            <input type="number" id="new-sku-threshold" class="os-input" required min="1"/>
+          </div>
+          <div class="os-form-group">
+            <label class="os-label" for="new-sku-reorder-qty">Auto-Reorder Quantity *</label>
+            <input type="number" id="new-sku-reorder-qty" class="os-input" required min="1"/>
+          </div>
+        </div>
+
+        <div class="os-grid-2">
+          <div class="os-form-group">
+            <label class="os-label" for="new-sku-cost">Cost Price (£) *</label>
+            <input type="number" id="new-sku-cost" class="os-input" required step="0.01" min="0"/>
+          </div>
+          <div class="os-form-group">
+            <label class="os-label" for="new-sku-sell">Retail Sell Price (£) *</label>
+            <input type="number" id="new-sku-sell" class="os-input" required step="0.01" min="0"/>
+          </div>
+        </div>
+
+        <div class="os-grid-2">
+          <div class="os-form-group">
+            <label class="os-label" for="new-sku-portions">Portions per Stock Unit</label>
+            <input type="number" id="new-sku-portions" class="os-input" min="1" max="100000" step="1" value="1"/>
+          </div>
+          <div class="os-form-group">
+            <label class="os-label" for="new-sku-portion-unit">Portion Unit</label>
+            <input type="text" id="new-sku-portion-unit" class="os-input" maxlength="16"/>
+          </div>
+        </div>
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin: -0.25rem 0 1rem;">
+          Optional. Only for items you sell part of at a time, e.g. 1000 g per 1kg bag. Leave at 1 if each sale uses a whole unit.
+        </p>
+
+        <div class="os-form-group">
+          <label class="os-label" for="new-sku-supplier">Designated UK Supplier Name *</label>
+          <input type="text" id="new-sku-supplier" class="os-input" required/>
+        </div>
+
+        <div class="os-flex-between" style="margin-top: 1.5rem;">
+          <button type="button" class="os-btn os-btn-secondary" id="btn-cancel-add-sku">Cancel</button>
+          <button type="submit" class="os-btn os-btn-primary">Save & Register SKU</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Adjust Stock Modal -->
+  <div class="os-modal-overlay" id="adjust-stock-modal">
+    <div class="os-modal-box" style="max-width: 440px;">
+      <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Adjust Stock Level</h3>
+      <p style="font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 1.25rem;" id="adjust-item-name">Item Name</p>
+
+      <form id="adjust-stock-form">
+        <input type="hidden" id="adjust-sku-id"/>
+        <div class="os-form-group">
+          <label class="os-label" for="adjust-new-quantity">New Verified Quantity</label>
+          <input type="number" id="adjust-new-quantity" class="os-input" required min="0"/>
+        </div>
+        <div class="os-form-group">
+          <label class="os-label" for="adjust-reason">Audit Reason</label>
+          <select id="adjust-reason" class="os-select">
+            <option value="Delivery received">New Supplier Delivery Received</option>
+            <option value="Weekly stocktake reconciliation">Weekly Stocktake Reconciliation</option>
+            <option value="Damaged / Wastage written off">Damaged / Wastage Written Off</option>
+          </select>
+        </div>
+
+        <div class="os-flex-between" style="margin-top: 1.5rem;">
+          <button type="button" class="os-btn os-btn-secondary" id="btn-close-adjust">Cancel</button>
+          <button type="submit" class="os-btn os-btn-primary">Update Stock</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="design-system/client-config.js"></script>
+  <script src="assets/js/os-core.js"></script>
+  <script src="assets/js/stock-engine.js"></script>
+  <script src="assets/js/invoice-engine.js"></script>
+  <script src="assets/js/order-engine.js"></script>
+  <script src="assets/js/rota-engine.js"></script>
+  <script src="assets/js/forecast-engine.js"></script>
+  <script src="assets/js/autonomous-agent.js"></script>
+
+  <script>
+    let activeFilter = 'all';
+    let searchQuery = '';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      window.KallistoOS.renderSidebar('stock');
+      window.KallistoOS.renderTopbar('Stock & Multi-Channel Inventory');
+
+      renderInventory();
+      bindEvents();
+
+      window.addEventListener('kallisto:stockUpdated', () => renderInventory());
+    });
+
+    function bindEvents() {
+      // Category tabs
+      document.querySelectorAll('.os-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.os-tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeFilter = btn.getAttribute('data-filter');
+          renderInventory();
+        });
+      });
+
+      // Search input
+      document.getElementById('search-sku-input')?.addEventListener('input', (e) => {
+        searchQuery = e.target.value.toLowerCase().trim();
+        renderInventory();
+      });
+
+      // Modals
+      const addModal = document.getElementById('add-sku-modal');
+      document.getElementById('btn-open-add-sku-modal')?.addEventListener('click', () => addModal.classList.add('open'));
+      document.getElementById('btn-close-add-sku')?.addEventListener('click', () => addModal.classList.remove('open'));
+      document.getElementById('btn-cancel-add-sku')?.addEventListener('click', () => addModal.classList.remove('open'));
+
+      const barcodeModal = document.getElementById('barcode-modal');
+      document.getElementById('btn-close-barcode')?.addEventListener('click', () => barcodeModal.classList.remove('open'));
+
+      const adjustModal = document.getElementById('adjust-stock-modal');
+      document.getElementById('btn-close-adjust')?.addEventListener('click', () => adjustModal.classList.remove('open'));
+
+      // Clear the duplicate-code message as soon as the code is edited
+      document.getElementById('new-sku-id')?.addEventListener('input', (e) => e.target.setCustomValidity(''));
+
+      // Add SKU Form
+      document.getElementById('add-sku-form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const state = window.KallistoOS.getState();
+
+        // SKU codes must be unique: stock is looked up by code, so a duplicate would
+        // silently take over every deduction meant for the original item.
+        const idInput = document.getElementById('new-sku-id');
+        const wanted = idInput.value.trim().toLowerCase();
+        if (state.inventory.some(i => i.id.toLowerCase() === wanted)) {
+          idInput.setCustomValidity('This SKU code already exists. Choose a different one.');
+          idInput.reportValidity();
+          return;
+        }
+        idInput.setCustomValidity('');
+
+        const newSku = {
+          id: document.getElementById('new-sku-id').value.trim(),
+          name: document.getElementById('new-sku-name').value.trim(),
+          category: document.getElementById('new-sku-category').value,
+          stock: parseInt(document.getElementById('new-sku-stock').value, 10),
+          minThreshold: parseInt(document.getElementById('new-sku-threshold').value, 10),
+          autoReorderQty: parseInt(document.getElementById('new-sku-reorder-qty').value, 10),
+          costPrice: parseFloat(document.getElementById('new-sku-cost').value),
+          sellPrice: parseFloat(document.getElementById('new-sku-sell').value),
+          supplier: document.getElementById('new-sku-supplier').value.trim(),
+          supplierEmail: 'orders@supplier.co.uk',
+          barcode: `5060${Math.floor(10000000 + Math.random() * 90000000)}`
+        };
+
+        // Portion model (optional): see KallistoStockEngine. Left off when 1 unit = 1 sale.
+        const portions = parseInt(document.getElementById('new-sku-portions').value, 10);
+        if (portions > 1) {
+          newSku.portionsPerUnit = portions;
+          newSku.portionUnit = document.getElementById('new-sku-portion-unit').value.trim() || 'portions';
+        }
+
+        state.inventory.unshift(newSku);
+        window.KallistoOS.saveState(state);
+        window.KallistoOS.logAutomation('SKU_REGISTERED', `New inventory SKU ${newSku.id} (${newSku.name}) created.`);
+        addModal.classList.remove('open');
+        document.getElementById('add-sku-form').reset();
+        renderInventory();
+      });
+
+      // Adjust Stock Form
+      document.getElementById('adjust-stock-form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const skuId = document.getElementById('adjust-sku-id').value;
+        const qty = document.getElementById('adjust-new-quantity').value;
+        const reason = document.getElementById('adjust-reason').value;
+
+        window.KallistoStockEngine.adjustStock(skuId, qty, reason);
+        adjustModal.classList.remove('open');
+        renderInventory();
+      });
+    }
+
+    function escapeHtml(text) {
+      return String(text).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    function renderInventory() {
+      const state = window.KallistoOS.getState();
+      const client = window.KallistoClients.getCurrentClient();
+      const tbody = document.getElementById('inventory-table-body');
+
+      let costValuation = 0;
+      let retailValuation = 0;
+      let lowStockCount = 0;
+
+      state.inventory.forEach(item => {
+        costValuation += item.costPrice * item.stock;
+        retailValuation += item.sellPrice * item.stock;
+        if (item.stock <= item.minThreshold) lowStockCount++;
+      });
+
+      document.getElementById('stat-total-skus').textContent = state.inventory.length;
+      document.getElementById('stat-stock-valuation').textContent = `${client.currency}${costValuation.toLocaleString('en-GB', { minimumFractionDigits: 2 })}`;
+      document.getElementById('stat-retail-valuation').textContent = `${client.currency}${retailValuation.toLocaleString('en-GB', { minimumFractionDigits: 2 })}`;
+      document.getElementById('stat-low-stock-count').textContent = lowStockCount;
+
+      const filtered = state.inventory.filter(item => {
+        const matchesCat = activeFilter === 'all' || item.category === activeFilter;
+        const matchesSearch = searchQuery === '' ||
+          item.id.toLowerCase().includes(searchQuery) ||
+          item.name.toLowerCase().includes(searchQuery) ||
+          item.supplier.toLowerCase().includes(searchQuery);
+        return matchesCat && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--text-muted); padding: 2rem;">No matching SKUs found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(item => {
+        const isLow = item.stock <= item.minThreshold;
+        return `
+          <tr>
+            <td style="font-family: var(--font-mono); font-weight: 700; color: var(--brand-primary);">${item.id}</td>
+            <td style="font-weight: 600;">${item.name}</td>
+            <td style="font-size: 0.8125rem; color: var(--text-muted);">${item.category}</td>
+            <td style="font-family: var(--font-mono); font-size: 1rem; font-weight: 700; color: ${isLow ? 'var(--status-danger)' : 'var(--text-primary)'};">
+              ${item.stock} units
+              ${(item.portionsPerUnit || 1) > 1 ? `<div style="font-size: 0.6875rem; font-weight: 500; color: var(--text-muted);">${window.KallistoStockEngine.remainingPortions(item).toLocaleString('en-GB')} ${escapeHtml(item.portionUnit || 'portions')} left</div>` : ''}
+            </td>
+            <td style="font-size: 0.8125rem; color: var(--text-muted);">${item.minThreshold} units</td>
+            <td style="font-family: var(--font-mono);">${client.currency}${item.costPrice.toFixed(2)}</td>
+            <td style="font-family: var(--font-mono); font-weight: 600;">${client.currency}${item.sellPrice.toFixed(2)}</td>
+            <td style="font-size: 0.8125rem;">${item.supplier}</td>
+            <td>
+              <span class="os-badge ${isLow ? 'os-badge-danger' : 'os-badge-success'}">
+                ${isLow ? 'LOW STOCK (Auto-PO)' : 'HEALTHY'}
+              </span>
+            </td>
+            <td>
+              <div style="display: flex; gap: 0.25rem;">
+                <button type="button" class="os-btn os-btn-secondary os-btn-sm" onclick="showBarcodeModal('${item.id}', '${item.name.replace(/'/g, "\\'")}', '${item.barcode}')" title="Generate Barcode">
+                  <span class="material-symbols-outlined text-[14px]">barcode</span>
+                </button>
+                <button type="button" class="os-btn os-btn-secondary os-btn-sm" onclick="openAdjustModal('${item.id}', '${item.name.replace(/'/g, "\\'")}', ${item.stock})" title="Adjust Stock">
+                  <span class="material-symbols-outlined text-[14px]">edit</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function showBarcodeModal(skuId, name, barcode) {
+      document.getElementById('barcode-modal-title').textContent = name;
+      document.getElementById('barcode-modal-sku').textContent = `${skuId} • ${barcode}`;
+      const svg = window.KallistoStockEngine.generateBarcodeSvg(barcode);
+      document.getElementById('barcode-svg-wrapper').innerHTML = svg;
+      document.getElementById('barcode-modal').classList.add('open');
+    }
+
+    function openAdjustModal(skuId, name, currentStock) {
+      document.getElementById('adjust-sku-id').value = skuId;
+      document.getElementById('adjust-item-name').textContent = `${name} (${skuId}) — Current: ${currentStock} units`;
+      document.getElementById('adjust-new-quantity').value = currentStock;
+      document.getElementById('adjust-stock-modal').classList.add('open');
+    }
+  </script>
+</body>
+</html>

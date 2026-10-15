@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Self-Ordering Kiosk & QR Menu | CLEVORISE OS</title>
+  <meta name="description" content="Customer-facing self-ordering digital kiosk and QR menu with instant kitchen dispatch and automated inventory deduction."/>
+  
+  <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+  
+  <link rel="stylesheet" href="design-system/design-tokens.css"/>
+  <link rel="stylesheet" href="design-system/components.css"/>
+  <link rel="stylesheet" href="assets/css/os-theme.css"/>
+
+  <style>
+    /* Kiosk-specific layout styles */
+    .kiosk-nav-category {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kiosk-menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+      gap: 1.25rem;
+    }
+
+    .kiosk-card {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .kiosk-card:hover {
+      border-color: var(--brand-primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .cart-sidebar-panel {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-md);
+      position: sticky;
+      top: 1.5rem;
+    }
+  </style>
+</head>
+<body class="os-body" style="background-color: var(--surface-bg);">
+
+  <div class="kiosk-container">
+    
+    <!-- Top Header Bar -->
+    <div class="os-flex-between" style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-subtle); flex-wrap: wrap; gap: 1rem;">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div class="os-brand-logo" style="width: 40px; height: 40px; font-size: 1.125rem;">C</div>
+        <div>
+          <h1 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--text-primary);" id="kiosk-brand-name">
+            Self-Ordering Kiosk
+          </h1>
+          <div style="font-size: 0.75rem; color: var(--text-muted);">Express Counter & Table Service</div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+        <button type="button" class="os-btn os-btn-secondary os-btn-sm" onclick="KallistoOS.toggleKioskMode()" title="Toggle Fullscreen Tablet Kiosk Mode">
+          <span class="material-symbols-outlined text-[16px]">fullscreen</span>
+          <span>Kiosk Mode</span>
+        </button>
+        <a href="index.html" class="os-btn os-btn-secondary os-btn-sm">
+          <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+          <span>Mission Control</span>
+        </a>
+        <a href="kitchen-display.html" class="os-btn os-btn-secondary os-btn-sm" target="_blank">
+          <span class="material-symbols-outlined text-[16px]">soup_kitchen</span>
+          <span>Open KDS</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Kiosk Layout: Menu on Left, Interactive Cart on Right -->
+    <div class="kiosk-grid">
+      
+      <!-- Left Column: Menu Categories & Items -->
+      <div>
+        
+        <!-- Category Filter Tabs -->
+        <div class="kiosk-nav-category" id="kiosk-category-pills">
+          <!-- Dynamic: one tab per category on the menu -->
+        </div>
+
+        <!-- Menu Cards Grid -->
+        <div class="kiosk-menu-grid" id="kiosk-items-container">
+          <!-- Dynamic -->
+        </div>
+
+      </div>
+
+      <!-- Right Column: Interactive Live Cart -->
+      <div>
+        <div class="cart-sidebar-panel">
+          <div class="os-flex-between" style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.125rem; font-weight: 700;">Your Order</h2>
+            <button type="button" class="os-btn os-btn-secondary os-btn-sm" id="btn-clear-cart" style="font-size: 0.75rem;">Clear</button>
+          </div>
+
+          <!-- Dining Mode / Table Selector -->
+          <div class="os-form-group" style="margin-bottom: 1.25rem;">
+            <label class="os-label" for="kiosk-table-select">Dining Option / Table #</label>
+            <select id="kiosk-table-select" class="os-select" style="font-weight: 600;">
+              <option value="Takeaway / Counter #1">Takeaway / Counter Pickup</option>
+              <option value="Table 1">Table 1 (Indoor Window)</option>
+              <option value="Table 2">Table 2 (Main Room)</option>
+              <option value="Table 3">Table 3 (Main Room)</option>
+              <option value="Table 4">Table 4 (Banquette)</option>
+              <option value="Table 5">Table 5 (Garden Terrace)</option>
+              <option value="Table 6">Table 6 (Garden Terrace)</option>
+            </select>
+          </div>
+
+          <!-- Customer Name -->
+          <div class="os-form-group" style="margin-bottom: 1.25rem;">
+            <label class="os-label" for="kiosk-customer-name">Your Name (for order callout)</label>
+            <input type="text" id="kiosk-customer-name" class="os-input"/>
+          </div>
+
+          <!-- Cart Items List -->
+          <div id="kiosk-cart-items" style="max-height: 280px; overflow-y: auto; margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;">
+            <!-- Cart items dynamically rendered -->
+          </div>
+
+          <!-- Cart Summary Breakdown -->
+          <div style="background: var(--surface-bg); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+            <div class="os-flex-between" style="margin-bottom: 0.25rem; font-size: 0.8125rem; color: var(--text-muted);">
+              <span>Items Subtotal:</span>
+              <span style="font-family: var(--font-mono); font-weight: 600;" id="kiosk-cart-subtotal">£0.00</span>
+            </div>
+            <div class="os-flex-between" style="margin-bottom: 0.25rem; font-size: 0.8125rem; color: var(--text-muted);">
+              <span>UK VAT (20% Inc):</span>
+              <span style="font-family: var(--font-mono); font-weight: 600;" id="kiosk-cart-vat">£0.00</span>
+            </div>
+            <div class="os-flex-between" style="border-top: 1px solid var(--border-medium); padding-top: 0.5rem; margin-top: 0.5rem;">
+              <span style="font-size: 1.125rem; font-weight: 800;">Total Amount:</span>
+              <span style="font-family: var(--font-mono); font-size: 1.25rem; font-weight: 800; color: var(--brand-primary);" id="kiosk-cart-total">£0.00</span>
+            </div>
+          </div>
+
+          <!-- Payment Options -->
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <button type="button" class="os-btn os-btn-primary" id="btn-pay-terminal" style="width: 100%; padding: 0.875rem; font-size: 0.95rem; background: linear-gradient(135deg, #0ea5e9, #0284c7);">
+              <span class="material-symbols-outlined text-[20px]">contactless</span>
+              <span>💳 Tap to Pay (Card / Phone)</span>
+            </button>
+            <button type="button" class="os-btn os-btn-secondary" id="btn-pay-cash" style="width: 100%; padding: 0.65rem; font-size: 0.85rem;">
+              <span class="material-symbols-outlined text-[18px]">payments</span>
+              <span>💵 Pay Cash at Counter</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Order Success Confirmation Modal -->
+  <div class="os-modal-overlay" id="order-success-modal">
+    <div class="os-modal-box" style="max-width: 460px; text-align: center; padding: 2.5rem;">
+      <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--status-success-bg); color: var(--status-success); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
+        <span class="material-symbols-outlined text-4xl">check_circle</span>
+      </div>
+
+      <h3 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; margin-bottom: 0.25rem;">
+        Order Placed Successfully!
+      </h3>
+      <div style="font-family: var(--font-mono); font-size: 1.5rem; font-weight: 800; color: var(--brand-primary); margin: 0.5rem 0;" id="success-order-id">
+        ORD-0000
+      </div>
+      <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.5rem;" id="success-order-message">
+        Your order has been sent to the kitchen display queue. Estimated prep time is 4-6 minutes.
+      </p>
+
+      <div style="background: var(--surface-bg); padding: 1rem; border-radius: var(--radius-md); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.5rem; text-align: left;">
+        <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem;">Autonomous Workflow Status:</div>
+        <div>✓ Linked inventory SKU stock decremented in real-time.</div>
+        <div>✓ Ticket dispatched to Kitchen Display Queue.</div>
+        <div>✓ Contactless card payment authorized & VAT receipt logged.</div>
+      </div>
+
+      <button type="button" class="os-btn os-btn-primary" id="btn-close-success-modal" style="width: 100%;">
+        Place Another Order
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="design-system/client-config.js"></script>
+  <script src="assets/js/os-core.js"></script>
+  <script src="assets/js/payment-terminal.js"></script>
+  <script src="assets/js/stock-engine.js"></script>
+  <script src="assets/js/invoice-engine.js"></script>
+  <script src="assets/js/order-engine.js"></script>
+  <script src="assets/js/rota-engine.js"></script>
+  <script src="assets/js/forecast-engine.js"></script>
+  <script src="assets/js/autonomous-agent.js"></script>
+
+  <script>
+    let activeCategory = 'all';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const client = window.KallistoClients.getCurrentClient();
+      document.getElementById('kiosk-brand-name').textContent = client.name;
+
+      renderCategoryPills();
+      renderMenuItems();
+      updateCartDisplay();
+      bindKioskEvents();
+
+      // Menu edited in another tab (Menu Editor): saved data changes, so redraw
+      window.addEventListener('storage', (e) => {
+        if (e.key === window.KallistoOS.STORAGE_KEY) { renderCategoryPills(); renderMenuItems(); }
+      });
+
+      window.KallistoOS.bus.on('cartUpdated', () => updateCartDisplay());
+    });
+
+    function bindKioskEvents() {
+      // Category pills
+      document.getElementById('kiosk-category-pills').addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-cat]');
+        if (!btn) return;
+        activeCategory = btn.getAttribute('data-cat');
+        renderCategoryPills();
+        renderMenuItems();
+      });
+
+      // Clear cart
+      document.getElementById('btn-clear-cart')?.addEventListener('click', () => {
+        window.KallistoOrderEngine.clearCart();
+      });
+
+      // Pay via Card Terminal / NFC Tap
+      document.getElementById('btn-pay-terminal')?.addEventListener('click', () => {
+        const cart = window.KallistoOrderEngine.cart;
+        if (cart.length === 0) {
+          alert('Please add items to your cart first.');
+          return;
+        }
+        const summary = window.KallistoOrderEngine.getCartSummary();
+        const table = document.getElementById('kiosk-table-select').value;
+        const customer = document.getElementById('kiosk-customer-name').value.trim() || 'Guest';
+
+        window.PaymentTerminal.openModal({
+          amount: summary.total,
+          orderRef: 'ORD-' + Math.floor(100 + Math.random() * 900),
+          items: cart.map(i => ({ name: i.name, price: i.unitPrice, qty: i.qty })),
+          onSuccess: () => {
+            const result = window.KallistoOrderEngine.submitOrder(table, customer);
+            if (result.success) {
+              document.getElementById('success-order-id').textContent = result.order.id;
+              document.getElementById('success-order-message').textContent = `Payment authorized. Order for ${customer} (${table}) is now live on the kitchen display queue!`;
+              document.getElementById('order-success-modal').classList.add('open');
+              document.getElementById('kiosk-customer-name').value = '';
+            }
+          }
+        });
+      });
+
+      // Pay at counter / cash
+      document.getElementById('btn-pay-cash')?.addEventListener('click', () => {
+        const table = document.getElementById('kiosk-table-select').value;
+        const customer = document.getElementById('kiosk-customer-name').value.trim() || 'Guest';
+
+        const result = window.KallistoOrderEngine.submitOrder(table, customer);
+        if (result.success) {
+          document.getElementById('success-order-id').textContent = result.order.id;
+          document.getElementById('success-order-message').textContent = `Order for ${customer} (${table}) recorded! Please pay at the counter.`;
+          document.getElementById('order-success-modal').classList.add('open');
+          document.getElementById('kiosk-customer-name').value = '';
+        } else {
+          alert('Please add items to your cart before placing an order.');
+        }
+      });
+
+      // Close success modal
+      document.getElementById('btn-close-success-modal')?.addEventListener('click', () => {
+        document.getElementById('order-success-modal').classList.remove('open');
+      });
+    }
+
+    // Tab labels: the original two categories keep their short kiosk wording
+    const CATEGORY_LABELS = { 'Bakery & Pastries': 'Pastries & Bakery', 'Retail Goods': 'Artisan Retail' };
+
+    function renderCategoryPills() {
+      const esc = window.KallistoOS.escapeHtml;
+      const categories = [...new Set(window.KallistoOS.getState().menu.map(m => m.category))];
+      if (activeCategory !== 'all' && !categories.includes(activeCategory)) activeCategory = 'all';
+      document.getElementById('kiosk-category-pills').innerHTML =
+        [{ value: 'all', label: 'All Items' }, ...categories.map(c => ({ value: c, label: CATEGORY_LABELS[c] || c }))]
+          .map(c => `<button type="button" class="os-tab-btn ${c.value === activeCategory ? 'active' : ''}" data-cat="${esc(c.value)}">${esc(c.label)}</button>`)
+          .join('');
+    }
+
+    function renderMenuItems() {
+      const state = window.KallistoOS.getState();
+      const client = window.KallistoClients.getCurrentClient();
+      const container = document.getElementById('kiosk-items-container');
+      const esc = window.KallistoOS.escapeHtml;
+
+      const filtered = state.menu.filter(item => {
+        return activeCategory === 'all' || item.category === activeCategory;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: var(--text-muted); font-size: 0.9375rem;">
+          Nothing on the menu here yet. Add items in the <a href="menu-editor.html" style="color: var(--brand-primary); font-weight: 600;">Menu Editor</a>.
+        </div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => `
+        <div class="kiosk-card" onclick="quickAddItem('${esc(item.id)}')">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+              <h3 style="font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--text-primary);">${esc(item.name)}</h3>
+              <span style="font-family: var(--font-mono); font-weight: 800; font-size: 1rem; color: var(--brand-primary); white-space: nowrap; margin-left: 0.5rem;">
+                ${client.currency}${item.price.toFixed(2)}
+              </span>
+            </div>
+            <p style="font-size: 0.8125rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 0.75rem;">
+              ${esc(item.desc)}
+            </p>
+          </div>
+
+          <div>
+            <div style="display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+              ${(item.dietary || []).map(d => `<span class="os-badge os-badge-info" style="font-size: 0.6875rem;">${esc(d)}</span>`).join('')}
+            </div>
+            <button type="button" class="os-btn os-btn-secondary os-btn-sm" style="width: 100%;">
+              <span class="material-symbols-outlined text-[16px]">add</span>
+              <span>Add to Order</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function quickAddItem(itemId) {
+      const state = window.KallistoOS.getState();
+      const item = state.menu.find(m => m.id === itemId);
+      if (item) {
+        window.KallistoOrderEngine.addToCart(item);
+      }
+    }
+
+    function setPayButtonsEnabled(enabled) {
+      ['btn-pay-terminal', 'btn-pay-cash'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+        btn.disabled = !enabled;
+        btn.style.opacity = enabled ? '1' : '0.6';
+      });
+    }
+
+    function updateCartDisplay() {
+      const cart = window.KallistoOrderEngine.cart;
+      const client = window.KallistoClients.getCurrentClient();
+      const container = document.getElementById('kiosk-cart-items');
+      const summary = window.KallistoOrderEngine.getCartSummary();
+
+      document.getElementById('kiosk-cart-subtotal').textContent = `${client.currency}${summary.subtotal.toFixed(2)}`;
+      document.getElementById('kiosk-cart-vat').textContent = `${client.currency}${summary.vatAmount.toFixed(2)}`;
+      document.getElementById('kiosk-cart-total').textContent = `${client.currency}${summary.total.toFixed(2)}`;
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 2rem 0; color: var(--text-muted); font-size: 0.875rem;">
+            <span class="material-symbols-outlined text-3xl" style="display: block; margin-bottom: 0.5rem; opacity: 0.5;">shopping_basket</span>
+            Your cart is currently empty.<br/>Tap items to add them.
+          </div>
+        `;
+        setPayButtonsEnabled(false);
+        return;
+      }
+
+      setPayButtonsEnabled(true);
+
+      container.innerHTML = cart.map((item, index) => `
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: var(--surface-bg); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+          <div style="flex: 1; padding-right: 0.5rem;">
+            <div style="font-weight: 700; font-size: 0.875rem; color: var(--text-primary);">${window.KallistoOS.escapeHtml(item.name)}</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">
+              ${client.currency}${item.unitPrice.toFixed(2)} each
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button type="button" class="os-btn os-btn-secondary os-btn-sm" style="padding: 0.25rem 0.5rem;" onclick="updateQty(${index}, ${item.qty - 1})">-</button>
+            <span style="font-family: var(--font-mono); font-weight: 700; min-width: 18px; text-align: center;">${item.qty}</span>
+            <button type="button" class="os-btn os-btn-secondary os-btn-sm" style="padding: 0.25rem 0.5rem;" onclick="updateQty(${index}, ${item.qty + 1})">+</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateQty(index, newQty) {
+      window.KallistoOrderEngine.updateCartQty(index, newQty);
+    }
+  </script>
+</body>
+</html>

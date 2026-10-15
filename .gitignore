@@ -1,0 +1,15 @@
+# Published to GitHub Pages: everything NOT listed here becomes public.
+
+# macOS
+.DS_Store
+
+# Deploy packages, backups and unzipped copies (never publish)
+*.zip
+*.bak
+hostinger_deploy/
+htaccess-upload.txt
+
+# Working folders that don't belong on the site
+Posters/
+.gstack/
+.claude/

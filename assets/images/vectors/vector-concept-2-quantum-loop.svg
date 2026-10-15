@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="orbitGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f0ff"/>
+      <stop offset="50%" stop-color="#0066ff"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="orbitGrad2" x1="100%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <radialGradient id="quantumCore" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="30%" stop-color="#38bdf8"/>
+      <stop offset="70%" stop-color="#0066ff"/>
+      <stop offset="100%" stop-color="#0b132b"/>
+    </radialGradient>
+    <filter id="coreGlowPulse" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Central Glowing Energy Core -->
+  <circle cx="50" cy="50" r="18" fill="url(#quantumCore)" filter="url(#coreGlowPulse)"/>
+
+  <!-- Upper Sweeping Dynamic 'C' Ribbon -->
+  <path d="M50 14 C74 14 88 28 88 40 C88 48 80 50 74 46 C68 42 70 32 50 30 C34 28 24 38 24 50 C24 64 34 72 50 72 C68 72 74 62 80 62 C86 62 88 68 84 74 C78 84 66 88 50 88 C26 88 12 70 12 50 C12 28 28 14 50 14 Z" fill="url(#orbitGrad1)"/>
+
+  <!-- Inner Dynamic Accent Arc -->
+  <path d="M42 22 C62 20 76 30 76 44 C76 40 68 28 44 26 Z" fill="url(#orbitGrad2)" opacity="0.8"/>
+  <path d="M42 80 C62 82 76 72 76 58 C76 62 68 74 44 76 Z" fill="url(#orbitGrad2)" opacity="0.8"/>
+</svg>

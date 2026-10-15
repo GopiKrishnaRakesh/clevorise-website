@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="cubeTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="cubeLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0066ff"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <linearGradient id="cubeRight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <filter id="matrixGlow">
+      <feDropShadow dx="0" dy="0" stdDeviation="2.5" flood-color="#00f0ff" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Top isometric facet -->
+  <polygon points="50,14 80,30 50,46 20,30" fill="url(#cubeTop)" stroke="#00f0ff" stroke-width="1.5" filter="url(#matrixGlow)"/>
+  
+  <!-- Left isometric facet -->
+  <polygon points="20,30 50,46 50,82 20,66" fill="url(#cubeLeft)" stroke="#38bdf8" stroke-width="1.5"/>
+
+  <!-- Right isometric facet -->
+  <polygon points="50,46 80,30 80,66 50,82" fill="url(#cubeRight)" stroke="#0066ff" stroke-width="1.5"/>
+
+  <!-- Matrix circuit tracks / nodes -->
+  <circle cx="50" cy="30" r="3" fill="#ffffff"/>
+  <circle cx="35" cy="56" r="2.5" fill="#38bdf8"/>
+  <circle cx="65" cy="56" r="2.5" fill="#38bdf8"/>
+  <circle cx="50" cy="64" r="3.5" fill="#00f0ff" filter="url(#matrixGlow)"/>
+
+  <path d="M50 30 L50 46 M35 56 L50 64 L65 56" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

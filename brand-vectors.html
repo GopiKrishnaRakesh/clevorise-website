@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CLEVORISE Brand Identity &amp; Vector Marks Showcase</title>
+  <meta name="description" content="Official design tokens and SVG vector logomarks for the CLEVORISE brand identity system."/>
+  <meta name="robots" content="noindex, follow"/>
+  <link rel="canonical" href="https://clevorise.co.uk/brand-vectors.html"/>
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://clevorise.co.uk/brand-vectors.html"/>
+  <meta property="og:title" content="CLEVORISE Brand Identity &amp; Vector Marks Showcase"/>
+  <meta property="og:description" content="Official design tokens and SVG vector logomarks for CLEVORISE."/>
+  <meta property="og:image" content="https://clevorise.co.uk/assets/images/og-preview.png"/>
+  <meta property="og:site_name" content="CLEVORISE Management Consultancy"/>
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="CLEVORISE Brand Identity &amp; Vector Marks Showcase"/>
+  <meta name="twitter:description" content="Official design tokens and SVG vector logomarks for CLEVORISE."/>
+  <meta name="twitter:image" content="https://clevorise.co.uk/assets/images/og-preview.png"/>
+
+  <!-- Favicons & Manifest -->
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml"/>
+  <link rel="icon" href="assets/images/favicon-32x32.png" type="image/png" sizes="32x32"/>
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png"/>
+  <link rel="manifest" href="assets/images/site.webmanifest"/>
+  <meta name="theme-color" content="#0066ff"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/style.css?v=3.3"/>
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --card-dark: #0f172a;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-blue: #0066ff;
+      --accent-cyan: #00f0ff;
+    }
+    body {
+      background: #090d16;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    .showcase-header {
+      padding: 3rem 1.5rem 2rem;
+      text-align: center;
+      position: relative;
+    }
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 1rem;
+      border-radius: 9999px;
+      background: rgba(0, 102, 255, 0.15);
+      border: 1px solid rgba(0, 102, 255, 0.35);
+      color: #38bdf8;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+    }
+    .title-display {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.75rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.75rem 0;
+      background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle-display {
+      color: #94a3b8;
+      font-size: 1.125rem;
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    .grid-container {
+      max-width: 1280px;
+      margin: 2.5rem auto 4rem;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: 1.75rem;
+    }
+    .concept-card {
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1.25rem;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .concept-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0, 102, 255, 0.45);
+      box-shadow: 0 16px 40px rgba(0, 102, 255, 0.15);
+    }
+    .concept-card.featured {
+      border-color: rgba(0, 102, 255, 0.5);
+      background: linear-gradient(180deg, #111e38 0%, #0f172a 100%);
+    }
+    .concept-card.featured::before {
+      content: 'RECOMMENDED';
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #0066ff;
+      color: #fff;
+      font-size: 0.6875rem;
+      font-weight: 800;
+      padding: 0.2rem 0.65rem;
+      border-radius: 9999px;
+      letter-spacing: 0.06em;
+    }
+    .img-preview-box {
+      width: 100%;
+      aspect-ratio: 1/1;
+      border-radius: 0.875rem;
+      background: #070a12;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+    .img-preview-box img {
+      width: 90%;
+      height: 90%;
+      object-fit: contain;
+      border-radius: 0.5rem;
+      transition: transform 0.4s ease;
+    }
+    .concept-card:hover .img-preview-box img {
+      transform: scale(1.04);
+    }
+    .concept-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: #38bdf8;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+    .concept-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem 0;
+      color: #ffffff;
+    }
+    .concept-desc {
+      color: #94a3b8;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      margin-bottom: 1.25rem;
+      flex-grow: 1;
+    }
+    .asset-links {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: auto;
+    }
+    .asset-btn {
+      flex: 1;
+      text-align: center;
+      padding: 0.6rem 0.8rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .asset-btn-primary {
+      background: #0066ff;
+      color: #ffffff;
+    }
+    .asset-btn-primary:hover {
+      background: #1a75ff;
+    }
+    .asset-btn-outline {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+    }
+    .asset-btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+    .brand-preview-strip {
+      max-width: 1280px;
+      margin: 0 auto 5rem;
+      padding: 0 1.5rem;
+    }
+    .mockup-card {
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1.25rem;
+      padding: 2rem;
+    }
+    .nav-preview-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 0.75rem;
+      margin-top: 1.25rem;
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="showcase-header">
+    <div class="badge-pill">
+      <span class="material-symbols-outlined text-[16px]">verified</span>
+      <span>Brand Identity & Vector Assets</span>
+    </div>
+    <h1 class="title-display">CLEVORISE Vector Marks</h1>
+    <p class="subtitle-display">
+      High-resolution PNG vector graphics and scalable SVGs generated for <strong>CLEVORISE Management Consultancy</strong>. Compare the 4 identity directions below to choose your favorite.
+    </p>
+  </header>
+
+  <main id="main-content" class="grid-container">
+
+    <!-- Option 1 -->
+    <div class="concept-card featured">
+      <div class="img-preview-box">
+        <img src="assets/images/vectors/vector-concept-1-hexacore.png" alt="Concept 1: HexaCore Growth Vector"/>
+      </div>
+      <div class="concept-num">CONCEPT 01</div>
+      <h2 class="concept-name">The HexaCore Growth Vector</h2>
+      <p class="concept-desc">
+        A precision isometric hexagon with an illuminated electric blue core and ascending cyan growth arrows. Represents foundational business stability, intelligent automation, and compounding scale.
+      </p>
+      <div class="asset-links">
+        <a href="assets/images/vectors/vector-concept-1-hexacore.png" download class="asset-btn asset-btn-primary">Download PNG</a>
+        <a href="assets/images/vectors/vector-concept-1-hexacore.svg" target="_blank" class="asset-btn asset-btn-outline">Open SVG</a>
+      </div>
+    </div>
+
+    <!-- Option 2 -->
+    <div class="concept-card">
+      <div class="img-preview-box">
+        <img src="assets/images/vectors/vector-concept-2-quantum-loop.png" alt="Concept 2: The Quantum Core Loop"/>
+      </div>
+      <div class="concept-num">CONCEPT 02</div>
+      <h2 class="concept-name">The Quantum Core Loop</h2>
+      <p class="concept-desc">
+        Fluid dynamic Möbius loops forming a stylized corporate 'C' encircling a glowing central intelligence nucleus. Evokes seamless small business workflows, zero friction, and continuous operations.
+      </p>
+      <div class="asset-links">
+        <a href="assets/images/vectors/vector-concept-2-quantum-loop.png" download class="asset-btn asset-btn-primary">Download PNG</a>
+        <a href="assets/images/vectors/vector-concept-2-quantum-loop.svg" target="_blank" class="asset-btn asset-btn-outline">Open SVG</a>
+      </div>
+    </div>
+
+    <!-- Option 3 -->
+    <div class="concept-card">
+      <div class="img-preview-box">
+        <img src="assets/images/vectors/vector-concept-3-shield-crest.png" alt="Concept 3: Ascendant Shield Crest"/>
+      </div>
+      <div class="concept-num">CONCEPT 03</div>
+      <h2 class="concept-name">The Ascendant Shield Crest</h2>
+      <p class="concept-desc">
+        Sharp geometric executive emblem combining a protective corporate shield, an upward-pointing chevron arrow, and an integrated 'C' monogram. Evokes executive trust, governance, and prestige.
+      </p>
+      <div class="asset-links">
+        <a href="assets/images/vectors/vector-concept-3-shield-crest.png" download class="asset-btn asset-btn-primary">Download PNG</a>
+        <a href="assets/images/vectors/vector-concept-3-shield-crest.svg" target="_blank" class="asset-btn asset-btn-outline">Open SVG</a>
+      </div>
+    </div>
+
+    <!-- Option 4 -->
+    <div class="concept-card">
+      <div class="img-preview-box">
+        <img src="assets/images/vectors/vector-concept-4-prism-matrix.png" alt="Concept 4: Modular Prism Matrix"/>
+      </div>
+      <div class="concept-num">CONCEPT 04</div>
+      <h2 class="concept-name">The Modular Prism Matrix</h2>
+      <p class="concept-desc">
+        A futuristic 3D isometric data cube with glowing circuit tracks and interconnected modular hubs. Directly evolves the original tech grid into a multi-dimensional small-business operating core.
+      </p>
+      <div class="asset-links">
+        <a href="assets/images/vectors/vector-concept-4-prism-matrix.png" download class="asset-btn asset-btn-primary">Download PNG</a>
+        <a href="assets/images/vectors/vector-concept-4-prism-matrix.svg" target="_blank" class="asset-btn asset-btn-outline">Open SVG</a>
+      </div>
+    </div>
+
+  </main>
+
+  <section class="brand-preview-strip">
+    <div class="mockup-card">
+      <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; margin-top: 0;">Live Header Preview</h3>
+      <p style="color: #94a3b8; font-size: 0.875rem;">How the vector mark integrates into the CLEVORISE navigation bar:</p>
+      
+      <div class="nav-preview-bar">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <img src="assets/images/vectors/vector-concept-1-hexacore.png" style="width: 32px; height: 32px; border-radius: 6px;" alt="CLEVORISE Vector"/>
+          <div>
+            <div style="font-weight: 800; font-size: 1rem; color: #fff; font-family: 'Space Grotesk', sans-serif;">CLEVORISE</div>
+            <div style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Management Consultancy</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+          <a href="index.html" class="asset-btn asset-btn-primary" style="padding: 0.5rem 1.25rem;">Visit Updated Website →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sales, Margins & P&L Forecast | CLEVORISE OS</title>
+  <meta name="description" content="Real-time waterfall Profit and Loss statement, gross and net margins, break-even analysis, and 30/60/90-day predictive forecasts."/>
+  
+  <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+  
+  <link rel="stylesheet" href="design-system/design-tokens.css"/>
+  <link rel="stylesheet" href="design-system/components.css"/>
+  <link rel="stylesheet" href="assets/css/os-theme.css"/>
+</head>
+<body class="os-body">
+
+  <div class="os-layout">
+    <aside class="os-sidebar" aria-label="Main Navigation"></aside>
+
+    <main class="os-main">
+      <header class="os-topbar"></header>
+
+      <div class="os-page-content">
+
+        <!-- Page Header -->
+        <div class="os-flex-between" style="margin-bottom: 1.5rem;">
+          <div>
+            <h2 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: var(--text-primary);">
+              Sales, Margins & P&L Forecast Engine
+            </h2>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+              Executive financial dashboard tracking live gross margins, operating overheads, break-even targets, and multi-horizon cash flow projections.
+            </p>
+          </div>
+          <button type="button" class="os-btn os-btn-secondary" onclick="window.print()">
+            <span class="material-symbols-outlined text-[18px]">print</span>
+            <span>Export Financial Report</span>
+          </button>
+        </div>
+
+        <!-- Metric KPI Cards -->
+        <div class="os-stat-grid">
+          <div class="os-stat-card">
+            <div class="os-stat-label">Net Sales Revenue</div>
+            <div class="os-stat-value" id="stat-net-sales">£0.00</div>
+            <div class="os-stat-trend positive"><span>Live Multi-Channel Revenue</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">Gross Profit (Margin)</div>
+            <div class="os-stat-value" id="stat-gross-profit">£0.00</div>
+            <div class="os-stat-trend positive"><span id="stat-gross-margin">0.0% Margin</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">Net Profit / (Loss)</div>
+            <div class="os-stat-value" id="stat-net-profit" style="color: var(--status-success);">£0.00</div>
+            <div class="os-stat-trend positive"><span id="stat-net-margin">0.0% Net Margin</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">Daily Break-Even Target</div>
+            <div class="os-stat-value" id="stat-daily-breakeven">£0.00</div>
+            <div class="os-stat-trend neutral"><span id="stat-breakeven-buffer">+0% Safety Buffer</span></div>
+          </div>
+        </div>
+
+        <!-- 2-Column Financial Grid -->
+        <div class="os-grid-2">
+          
+          <!-- Column 1: Live Waterfall P&L Breakdown -->
+          <div class="os-card">
+            <div class="os-card-header">
+              <div>
+                <h3 class="os-card-title">Waterfall Profit & Loss Ledger</h3>
+                <div class="os-card-desc">Monthly baseline reconciled across sales, COGS, and operating expenses</div>
+              </div>
+              <span class="os-badge os-badge-success">HMRC Accounting Standard</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+              
+              <!-- 1. Revenue -->
+              <div style="background: var(--surface-bg); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                <div class="os-flex-between" style="font-weight: 700;">
+                  <span>Gross Sales (Invoicing & Kiosks)</span>
+                  <span style="font-family: var(--font-mono);" id="pnl-gross-sales">£0.00</span>
+                </div>
+                <div class="os-flex-between" style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 0.25rem;">
+                  <span>Less: Promotional Discounts (2%)</span>
+                  <span style="font-family: var(--font-mono); color: var(--status-danger);" id="pnl-discounts">-£0.00</span>
+                </div>
+                <div class="os-flex-between" style="border-top: 1px dashed var(--border-medium); margin-top: 0.5rem; padding-top: 0.5rem; font-weight: 800;">
+                  <span>Net Sales Revenue</span>
+                  <span style="font-family: var(--font-mono); color: var(--brand-primary);" id="pnl-net-sales">£0.00</span>
+                </div>
+              </div>
+
+              <!-- 2. COGS -->
+              <div style="background: var(--surface-bg); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                <div class="os-flex-between" style="font-weight: 600; color: var(--text-secondary);">
+                  <span>Cost of Goods Sold (COGS @ 28%)</span>
+                  <span style="font-family: var(--font-mono); color: var(--status-danger);" id="pnl-cogs">-£0.00</span>
+                </div>
+                <div class="os-flex-between" style="border-top: 1px dashed var(--border-medium); margin-top: 0.5rem; padding-top: 0.5rem; font-weight: 800;">
+                  <span>Gross Profit</span>
+                  <span style="font-family: var(--font-mono); color: var(--status-success);" id="pnl-gross-profit">£0.00</span>
+                </div>
+              </div>
+
+              <!-- 3. Operating Expenses -->
+              <div style="background: var(--surface-bg); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                <div style="font-weight: 700; font-size: 0.8125rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;">
+                  Operating Expenses (Opex Breakdown)
+                </div>
+                <div class="os-flex-between" style="font-size: 0.8125rem; padding: 0.2rem 0;">
+                  <span>Staff & Labour Expenditure (Weekly Rota × 4.33)</span>
+                  <span style="font-family: var(--font-mono);" id="pnl-opex-labour">£0.00</span>
+                </div>
+                <div class="os-flex-between" style="font-size: 0.8125rem; padding: 0.2rem 0;">
+                  <span>Commercial Premises Rent</span>
+                  <span style="font-family: var(--font-mono);" id="pnl-opex-rent">£0.00</span>
+                </div>
+                <div class="os-flex-between" style="font-size: 0.8125rem; padding: 0.2rem 0;">
+                  <span>Utilities & High-Speed Comms</span>
+                  <span style="font-family: var(--font-mono);" id="pnl-opex-utilities">£0.00</span>
+                </div>
+                <div class="os-flex-between" style="font-size: 0.8125rem; padding: 0.2rem 0;">
+                  <span>Software Subscriptions & Compliance</span>
+                  <span style="font-family: var(--font-mono);" id="pnl-opex-software">£0.00</span>
+                </div>
+                <div class="os-flex-between" style="font-size: 0.8125rem; padding: 0.2rem 0;">
+                  <span>Local Marketing & Footfall Campaigns</span>
+                  <span style="font-family: var(--font-mono);" id="pnl-opex-marketing">£0.00</span>
+                </div>
+                <div class="os-flex-between" style="border-top: 1px dashed var(--border-medium); margin-top: 0.5rem; padding-top: 0.5rem; font-weight: 700;">
+                  <span>Total Operating Expenses</span>
+                  <span style="font-family: var(--font-mono); color: var(--status-danger);" id="pnl-opex-total">-£0.00</span>
+                </div>
+              </div>
+
+              <!-- 4. Final Net Profit -->
+              <div style="background: #0f172a; color: #ffffff; padding: 1.25rem; border-radius: var(--radius-md);">
+                <div class="os-flex-between">
+                  <div>
+                    <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8;">
+                      Net Operating Profit (EBITDA)
+                    </div>
+                    <div style="font-size: 1.5rem; font-weight: 800; font-family: var(--font-display); color: #34d399;" id="pnl-net-profit">
+                      £0.00
+                    </div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div style="font-size: 0.75rem; color: #94a3b8;">Net Profit Margin</div>
+                    <div style="font-family: var(--font-mono); font-size: 1.25rem; font-weight: 800;" id="pnl-net-margin">
+                      0.0%
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Column 2: Predictive 30/60/90-Day Forecast & Break-Even Analysis -->
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- Break-Even Card -->
+            <div class="os-card">
+              <div class="os-card-header">
+                <div>
+                  <h3 class="os-card-title">Break-Even Analysis & Margin of Safety</h3>
+                  <div class="os-card-desc">Exact minimum sales required to cover all fixed and variable overheads</div>
+                </div>
+                <span class="os-badge os-badge-info">Target Safe</span>
+              </div>
+
+              <div class="os-grid-2" style="margin-bottom: 1rem;">
+                <div style="background: var(--surface-bg); padding: 1rem; border-radius: var(--radius-md); text-align: center;">
+                  <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Monthly Break-Even</div>
+                  <div style="font-family: var(--font-mono); font-size: 1.35rem; font-weight: 800; margin-top: 0.25rem;" id="calc-monthly-breakeven">£0.00</div>
+                </div>
+                <div style="background: var(--surface-bg); padding: 1rem; border-radius: var(--radius-md); text-align: center;">
+                  <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Daily Turn-Profit Point</div>
+                  <div style="font-family: var(--font-mono); font-size: 1.35rem; font-weight: 800; margin-top: 0.25rem; color: var(--brand-primary);" id="calc-daily-breakeven">£0.00</div>
+                </div>
+              </div>
+
+              <p style="font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.5;">
+                Your business currently operates with a <strong id="calc-safety-buffer">+0% revenue buffer</strong> above break-even. Any sales above the daily target contribute directly to net profit at a <strong>72% contribution margin</strong>.
+              </p>
+            </div>
+
+            <!-- Multi-Horizon Forecast Card -->
+            <div class="os-card">
+              <div class="os-card-header">
+                <div>
+                  <h3 class="os-card-title">30 / 60 / 90-Day Forward Projections</h3>
+                  <div class="os-card-desc">Predictive scenario models adjusted for UK retail/hospitality seasonality</div>
+                </div>
+                <span class="os-badge os-badge-success">Predictive Engine</span>
+              </div>
+
+              <div class="os-table-wrapper">
+                <table class="os-table">
+                  <thead>
+                    <tr>
+                      <th>Time Horizon</th>
+                      <th>Expected Base</th>
+                      <th>Pessimistic (-10%)</th>
+                      <th>Bullish (+15%)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="forecast-table-body">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+
+              <div style="margin-top: 1rem; font-size: 0.75rem; color: var(--text-muted); line-height: 1.4;">
+                * Forecast model accounts for standard 4% month-over-month UK growth rate, 28% COGS, and fixed operating rent agreements.
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="design-system/client-config.js"></script>
+  <script src="assets/js/os-core.js"></script>
+  <script src="assets/js/stock-engine.js"></script>
+  <script src="assets/js/invoice-engine.js"></script>
+  <script src="assets/js/order-engine.js"></script>
+  <script src="assets/js/rota-engine.js"></script>
+  <script src="assets/js/forecast-engine.js"></script>
+  <script src="assets/js/autonomous-agent.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      window.KallistoOS.renderSidebar('forecast');
+      window.KallistoOS.renderTopbar('Sales & P&L Forecast');
+
+      renderFinancials();
+
+      window.addEventListener('kallisto:stateSaved', () => renderFinancials());
+      window.addEventListener('kallisto:orderUpdated', () => renderFinancials());
+    });
+
+    function renderFinancials() {
+      const pnl = window.KallistoForecastEngine.generateCurrentPnl();
+      const client = window.KallistoClients.getCurrentClient();
+      const curr = pnl.currency;
+
+      // Top KPI Cards
+      document.getElementById('stat-net-sales').textContent = `${curr}${pnl.netSales.toLocaleString('en-GB', { minimumFractionDigits: 2 })}`;
+      document.getElementById('stat-gross-profit').textContent = `${curr}${pnl.grossProfit.toLocaleString('en-GB', { minimumFractionDigits: 2 })}`;
+      document.getElementById('stat-gross-margin').textContent = `${pnl.grossMarginPercent}% Margin`;
+      
+      const netProfitElem = document.getElementById('stat-net-profit');
+      netProfitElem.textContent = `${curr}${pnl.netProfit.toLocaleString('en-GB', { minimumFractionDigits: 2 })}`;
+      netProfitElem.style.color = pnl.netProfit >= 0 ? 'var(--status-success)' : 'var(--status-danger)';
+      document.getElementById('stat-net-margin').textContent = `${pnl.netMarginPercent}% Net Margin`;
+
+      document.getElementById('stat-daily-breakeven').textContent = `${curr}${pnl.breakEven.daily.toLocaleString('en-GB', { minimumFractionDigits: 2 })}`;
+      document.getElementById('stat-breakeven-buffer').textContent = `${pnl.breakEven.bufferRatio > 0 ? '+' : ''}${pnl.breakEven.bufferRatio}% Safety Buffer`;
+
+      // Waterfall P&L
+      document.getElementById('pnl-gross-sales').textContent = `${curr}${pnl.monthlyGrossSales.toFixed(2)}`;
+      document.getElementById('pnl-discounts').textContent = `-${curr}${pnl.discounts.toFixed(2)}`;
+      document.getElementById('pnl-net-sales').textContent = `${curr}${pnl.netSales.toFixed(2)}`;
+      document.getElementById('pnl-cogs').textContent = `-${curr}${pnl.cogsAmount.toFixed(2)}`;
+      document.getElementById('pnl-gross-profit').textContent = `${curr}${pnl.grossProfit.toFixed(2)}`;
+
+      document.getElementById('pnl-opex-labour').textContent = `${curr}${pnl.opex.labour.toFixed(2)}`;
+      document.getElementById('pnl-opex-rent').textContent = `${curr}${pnl.opex.rent.toFixed(2)}`;
+      document.getElementById('pnl-opex-utilities').textContent = `${curr}${pnl.opex.utilities.toFixed(2)}`;
+      document.getElementById('pnl-opex-software').textContent = `${curr}${pnl.opex.software.toFixed(2)}`;
+      document.getElementById('pnl-opex-marketing').textContent = `${curr}${pnl.opex.marketing.toFixed(2)}`;
+      document.getElementById('pnl-opex-total').textContent = `-${curr}${pnl.opex.total.toFixed(2)}`;
+
+      const pnlNetProfit = document.getElementById('pnl-net-profit');
+      pnlNetProfit.textContent = `${curr}${pnl.netProfit.toFixed(2)}`;
+      pnlNetProfit.style.color = pnl.netProfit >= 0 ? '#34d399' : '#f87171';
+      document.getElementById('pnl-net-margin').textContent = `${pnl.netMarginPercent}%`;
+
+      // Break-even
+      document.getElementById('calc-monthly-breakeven').textContent = `${curr}${pnl.breakEven.monthly.toLocaleString('en-GB', { minimumFractionDigits: 2 })}`;
+      document.getElementById('calc-daily-breakeven').textContent = `${curr}${pnl.breakEven.daily.toLocaleString('en-GB', { minimumFractionDigits: 2 })}`;
+      document.getElementById('calc-safety-buffer').textContent = `${pnl.breakEven.bufferRatio > 0 ? '+' : ''}${pnl.breakEven.bufferRatio}%`;
+
+      // Projections Table
+      const forecasts = window.KallistoForecastEngine.generateMultiHorizonForecast(0.04);
+      const tbody = document.getElementById('forecast-table-body');
+      tbody.innerHTML = forecasts.map(f => `
+        <tr>
+          <td style="font-weight: 700; font-family: var(--font-mono);">${f.horizonDays} Days Ahead</td>
+          <td>
+            <div style="font-weight: 700; font-family: var(--font-mono);">${curr}${f.expected.sales.toLocaleString('en-GB')}</div>
+            <div style="font-size: 0.75rem; color: var(--status-success);">Net: ${curr}${f.expected.netProfit.toLocaleString('en-GB')}</div>
+          </td>
+          <td>
+            <div style="font-weight: 700; font-family: var(--font-mono); color: var(--text-muted);">${curr}${f.pessimistic.sales.toLocaleString('en-GB')}</div>
+            <div style="font-size: 0.75rem; color: var(--status-danger);">Net: ${curr}${f.pessimistic.netProfit.toLocaleString('en-GB')}</div>
+          </td>
+          <td>
+            <div style="font-weight: 700; font-family: var(--font-mono); color: var(--brand-primary);">${curr}${f.bullish.sales.toLocaleString('en-GB')}</div>
+            <div style="font-size: 0.75rem; color: var(--status-success);">Net: ${curr}${f.bullish.netProfit.toLocaleString('en-GB')}</div>
+          </td>
+        </tr>
+      `).join('');
+    }
+  </script>
+</body>
+</html>

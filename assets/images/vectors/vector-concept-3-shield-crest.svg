@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="crestBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0080ff"/>
+      <stop offset="100%" stop-color="#0044cc"/>
+    </linearGradient>
+    <linearGradient id="crestSilver" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="50%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+    <linearGradient id="crestCyan" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Left Outer Shield Wing -->
+  <path d="M50 14 L24 24 L26 56 C26 72 38 84 50 90 L50 78 C42 74 36 64 36 54 L34 32 L50 24 Z" fill="url(#crestBlue)"/>
+
+  <!-- Right 'C' Monogram Outer Wing -->
+  <path d="M50 14 L76 24 L74 34 L58 28 L58 40 L72 40 L72 50 L58 50 L58 64 L74 60 L76 68 C70 78 60 86 50 90 L50 78 C56 74 64 68 64 60 L50 60 Z" fill="url(#crestSilver)"/>
+
+  <!-- Central Ascendant Chevron Arrow -->
+  <path d="M50 28 L66 54 L56 54 L50 44 L44 54 L34 54 Z" fill="url(#crestCyan)"/>
+
+  <!-- Lower Anchor Diamond -->
+  <polygon points="50,56 58,68 50,78 42,68" fill="url(#crestBlue)"/>
+</svg>

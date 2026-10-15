@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Autonomous Rules Engine | CLEVORISE OS</title>
+  <meta name="description" content="Event-driven autonomous business operations engine: zero human interference stock replenishment, invoice creation, and labour guard."/>
+  
+  <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+  
+  <link rel="stylesheet" href="design-system/design-tokens.css"/>
+  <link rel="stylesheet" href="design-system/components.css"/>
+  <link rel="stylesheet" href="assets/css/os-theme.css"/>
+</head>
+<body class="os-body">
+
+  <div class="os-layout">
+    <aside class="os-sidebar" aria-label="Main Navigation"></aside>
+
+    <main class="os-main">
+      <header class="os-topbar"></header>
+
+      <div class="os-page-content">
+
+        <!-- Page Header -->
+        <div class="os-flex-between" style="margin-bottom: 1.5rem;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+              <span class="os-pulse-dot"></span>
+              <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--brand-primary);">
+                Watchdog Active • 8000ms Audit Interval
+              </span>
+            </div>
+            <h2 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: var(--text-primary);">
+              Autonomous Rules Engine ("Zero Human Interference")
+            </h2>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+              Set operational rules once. CLEVORISE OS interconnects orders, stock replenishment, tax invoicing, and labour efficiency without manual oversight.
+            </p>
+          </div>
+
+          <button type="button" class="os-btn os-btn-primary" id="btn-force-simulation">
+            <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+            <span>Trigger Simulation Cycle</span>
+          </button>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="os-stat-grid">
+          <div class="os-stat-card">
+            <div class="os-stat-label">Active Autonomous Rules</div>
+            <div class="os-stat-value" id="stat-active-rules">4 / 4</div>
+            <div class="os-stat-trend positive"><span>All Chains Operational</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">Automated Tasks Executed</div>
+            <div class="os-stat-value" id="stat-executions-count">250+</div>
+            <div class="os-stat-trend positive"><span>Zero Manual Admin</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">Admin Hours Reclaimed</div>
+            <div class="os-stat-value">64.5 hrs</div>
+            <div class="os-stat-trend positive"><span>~15 hrs / week saved</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">Operational Error Rate</div>
+            <div class="os-stat-value" style="color: var(--status-success);">0.00%</div>
+            <div class="os-stat-trend positive"><span>Deterministic Logic</span></div>
+          </div>
+        </div>
+
+        <!-- 2-Column Rules & Log Grid -->
+        <div class="os-grid-2-1">
+          
+          <!-- Column 1: Configured Automation Chains -->
+          <div class="os-card">
+            <div class="os-card-header">
+              <div>
+                <h3 class="os-card-title">Autonomous Rule Chains</h3>
+                <div class="os-card-desc">Event-driven triggers that run in the background 24/7</div>
+              </div>
+              <span class="os-badge os-badge-success">Self-Driving Operations</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem;" id="rules-list-container">
+              <!-- Dynamic -->
+            </div>
+          </div>
+
+          <!-- Column 2: Live Autonomous Audit Trail -->
+          <div class="os-card">
+            <div class="os-card-header">
+              <div>
+                <h3 class="os-card-title">Live Audit Trace</h3>
+                <div class="os-card-desc">Immutable log of automated decisions</div>
+              </div>
+              <button type="button" class="os-btn os-btn-secondary os-btn-sm" id="btn-clear-logs">Clear</button>
+            </div>
+
+            <div class="automation-log-list" id="automation-full-logs" style="max-height: 520px;">
+              <!-- Dynamic -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="design-system/client-config.js"></script>
+  <script src="assets/js/os-core.js"></script>
+  <script src="assets/js/stock-engine.js"></script>
+  <script src="assets/js/invoice-engine.js"></script>
+  <script src="assets/js/order-engine.js"></script>
+  <script src="assets/js/rota-engine.js"></script>
+  <script src="assets/js/forecast-engine.js"></script>
+  <script src="assets/js/autonomous-agent.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      window.KallistoOS.renderSidebar('automations');
+      window.KallistoOS.renderTopbar('Autonomous Rules Engine');
+
+      renderRulesAndLogs();
+      bindAutomationEvents();
+
+      window.addEventListener('kallisto:stateSaved', () => renderRulesAndLogs());
+      window.addEventListener('kallisto:automationLogged', () => renderRulesAndLogs());
+    });
+
+    function bindAutomationEvents() {
+      document.getElementById('btn-force-simulation')?.addEventListener('click', () => {
+        window.KallistoAutonomousAgent.simulateIncomingOrder();
+        window.KallistoAutonomousAgent.runAutonomousAuditCycle();
+        renderRulesAndLogs();
+      });
+
+      document.getElementById('btn-clear-logs')?.addEventListener('click', () => {
+        const state = window.KallistoOS.getState();
+        state.automationLogs = [];
+        window.KallistoOS.saveState(state);
+        renderRulesAndLogs();
+      });
+    }
+
+    function renderRulesAndLogs() {
+      const state = window.KallistoOS.getState();
+
+      const totalExecutions = state.automations.reduce((acc, a) => acc + (a.executionsCount || 0), 0);
+      document.getElementById('stat-executions-count').textContent = totalExecutions;
+      document.getElementById('stat-active-rules').textContent = `${state.automations.filter(a => a.enabled).length} / ${state.automations.length}`;
+
+      // Render Rules Cards
+      const rulesContainer = document.getElementById('rules-list-container');
+      rulesContainer.innerHTML = state.automations.map(rule => `
+        <div style="background: var(--surface-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
+          <div class="os-flex-between" style="margin-bottom: 0.5rem;">
+            <div style="font-weight: 700; font-size: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+              <span class="material-symbols-outlined text-[18px] text-[#ff5d00]">smart_toy</span>
+              <span>${rule.title}</span>
+            </div>
+            <label style="display: flex; align-items: center; cursor: pointer; gap: 0.5rem;">
+              <input type="checkbox" ${rule.enabled ? 'checked' : ''} onchange="toggleRule('${rule.id}')" style="width: 18px; height: 18px; accent-color: var(--brand-primary);"/>
+              <span style="font-size: 0.75rem; font-weight: 600; color: ${rule.enabled ? 'var(--status-success)' : 'var(--text-muted)'};">
+                ${rule.enabled ? 'ACTIVE' : 'PAUSED'}
+              </span>
+            </label>
+          </div>
+
+          <div style="font-size: 0.8125rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+            <div style="color: var(--text-muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">TRIGGER:</div>
+            ${rule.trigger}
+          </div>
+
+          <div style="font-size: 0.8125rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+            <div style="color: var(--text-muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">AUTONOMOUS ACTION:</div>
+            ${rule.action}
+          </div>
+
+          <div class="os-flex-between" style="border-top: 1px dashed var(--border-medium); padding-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">
+            <span>Executions: <strong style="color: var(--text-primary); font-family: var(--font-mono);">${rule.executionsCount}</strong></span>
+            <span style="color: var(--status-success); font-weight: 600;">✓ Automated Safeguard</span>
+          </div>
+        </div>
+      `).join('');
+
+      // Render Logs
+      const logsContainer = document.getElementById('automation-full-logs');
+      if (state.automationLogs.length === 0) {
+        logsContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 2rem;">No logs recorded yet.</div>`;
+      } else {
+        logsContainer.innerHTML = state.automationLogs.map(log => `
+          <div class="automation-log-item">
+            <span class="automation-log-time">${window.KallistoOS.escapeHtml(log.time)}</span>
+            <div>
+              <div style="font-weight: 600; color: var(--text-primary); font-size: 0.75rem; text-transform: uppercase;">
+                ${window.KallistoOS.escapeHtml(log.event.replace(/_/g, ' '))}
+              </div>
+              <div style="color: var(--text-secondary); margin-top: 2px;">
+                ${window.KallistoOS.escapeHtml(log.detail)}
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function toggleRule(ruleId) {
+      const state = window.KallistoOS.getState();
+      const rule = state.automations.find(r => r.id === ruleId);
+      if (rule) {
+        rule.enabled = !rule.enabled;
+        window.KallistoOS.saveState(state);
+        window.KallistoOS.logAutomation(
+          'RULE_STATE_CHANGED',
+          `Autonomous rule '${rule.title}' toggled to ${rule.enabled ? 'ACTIVE' : 'PAUSED'}.`
+        );
+        renderRulesAndLogs();
+      }
+    }
+  </script>
+</body>
+</html>

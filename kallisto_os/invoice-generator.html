@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Invoice Generator & UK VAT MTD | CLEVORISE OS</title>
+  <meta name="description" content="Automated UK VAT Invoicing, HMRC Making Tax Digital ledger, and Late Payment of Commercial Debts statutory interest calculator."/>
+  
+  <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+  
+  <link rel="stylesheet" href="design-system/design-tokens.css"/>
+  <link rel="stylesheet" href="design-system/components.css"/>
+  <link rel="stylesheet" href="assets/css/os-theme.css"/>
+
+  <style>
+    @media print {
+      body * { visibility: hidden; }
+      #printable-invoice-modal, #printable-invoice-modal * { visibility: visible; }
+      #printable-invoice-modal { position: absolute; left: 0; top: 0; width: 100%; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="os-body">
+
+  <div class="os-layout">
+    <aside class="os-sidebar no-print" aria-label="Main Navigation"></aside>
+
+    <main class="os-main">
+      <header class="os-topbar no-print"></header>
+
+      <div class="os-page-content">
+
+        <!-- Page Header Action Bar -->
+        <div class="os-flex-between no-print" style="margin-bottom: 1.5rem;">
+          <div>
+            <h2 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: var(--text-primary);">
+              Automated UK Tax Invoicing & MTD Ledger
+            </h2>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+              Generate HMRC Making Tax Digital compliant VAT invoices with automated statutory late payment protection.
+            </p>
+          </div>
+          <button type="button" class="os-btn os-btn-primary" id="btn-open-new-invoice-modal">
+            <span class="material-symbols-outlined text-[18px]">add</span>
+            <span>Create New Tax Invoice</span>
+          </button>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="os-stat-grid no-print">
+          <div class="os-stat-card">
+            <div class="os-stat-label">Total Billed (MTD Year to Date)</div>
+            <div class="os-stat-value" id="stat-total-billed">£0.00</div>
+            <div class="os-stat-trend positive"><span>HMRC MTD Ready</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">Total 20% Output VAT Tracked</div>
+            <div class="os-stat-value" id="stat-total-vat">£0.00</div>
+            <div class="os-stat-trend neutral"><span>Quarterly VAT Return</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">Overdue Invoices</div>
+            <div class="os-stat-value" id="stat-overdue-count" style="color: var(--status-danger);">0</div>
+            <div class="os-stat-trend negative"><span id="stat-overdue-debt">£0.00 outstanding</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">Statutory Interest Rate (BoE + 8%)</div>
+            <div class="os-stat-value">13.25%</div>
+            <div class="os-stat-trend positive"><span>UK 1998 Act Protection</span></div>
+          </div>
+        </div>
+
+        <!-- Invoices Ledger Table -->
+        <div class="os-card no-print">
+          <div class="os-card-header">
+            <div>
+              <h3 class="os-card-title">Commercial Invoices Ledger</h3>
+              <div class="os-card-desc">Click any invoice to view formatted tax document, print, or issue payment reminder</div>
+            </div>
+            <span class="os-badge os-badge-info" id="active-invoices-badge">0 Invoices</span>
+          </div>
+
+          <div class="os-table-wrapper">
+            <table class="os-table">
+              <thead>
+                <tr>
+                  <th>Invoice #</th>
+                  <th>Customer / Company</th>
+                  <th>Issue Date</th>
+                  <th>Due Date</th>
+                  <th>Net Subtotal</th>
+                  <th>VAT</th>
+                  <th>Total Due</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="invoices-table-body">
+                <!-- Dynamic -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Create Invoice Modal Form -->
+  <div class="os-modal-overlay no-print" id="new-invoice-modal">
+    <div class="os-modal-box" style="max-width: 750px;">
+      <div class="os-flex-between" style="margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-subtle);">
+        <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700;">Issue New Tax Invoice</h3>
+        <button type="button" class="os-btn os-btn-secondary os-btn-sm" id="btn-close-invoice-modal">
+          <span class="material-symbols-outlined text-[16px]">close</span>
+        </button>
+      </div>
+
+      <form id="create-invoice-form">
+        <div class="os-grid-2">
+          <div class="os-form-group">
+            <label class="os-label" for="client-name-input">Customer Business Name *</label>
+            <input type="text" id="client-name-input" class="os-input" required/>
+          </div>
+          <div class="os-form-group">
+            <label class="os-label" for="client-email-input">Billing Email *</label>
+            <input type="email" id="client-email-input" class="os-input" required/>
+          </div>
+        </div>
+
+        <div class="os-grid-2">
+          <div class="os-form-group">
+            <label class="os-label" for="client-vat-input">Customer VAT Number (Optional)</label>
+            <input type="text" id="client-vat-input" class="os-input"/>
+          </div>
+          <div class="os-form-group">
+            <label class="os-label" for="due-date-input">Due Date *</label>
+            <input type="date" id="due-date-input" class="os-input" required/>
+          </div>
+        </div>
+
+        <div class="os-form-group">
+          <label class="os-label">VAT Rate *</label>
+          <select id="vat-rate-select" class="os-select">
+            <option value="0.20" selected>Standard Rate UK VAT (20%)</option>
+            <option value="0.05">Reduced Rate UK VAT (5% - Energy/Specified)</option>
+            <option value="0.00">Zero-Rated UK VAT (0% - Books/Unprocessed Food)</option>
+          </select>
+        </div>
+
+        <!-- Line Items Section -->
+        <div style="margin: 1.5rem 0;">
+          <div class="os-flex-between" style="margin-bottom: 0.5rem;">
+            <label class="os-label" style="margin-bottom: 0;">Line Items</label>
+            <button type="button" class="os-btn os-btn-secondary os-btn-sm" id="btn-add-line-item">
+              <span class="material-symbols-outlined text-[14px]">add</span>
+              <span>Add Item</span>
+            </button>
+          </div>
+
+          <div id="line-items-container" style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <!-- Line Item Row Template -->
+            <div class="line-item-row" style="display: grid; grid-template-columns: 3fr 1fr 1.5fr 36px; gap: 0.5rem; align-items: center;">
+              <input type="text" class="os-input item-desc" required placeholder="Description of goods or service"/>
+              <input type="number" class="os-input item-qty" required min="1" value="1" placeholder="Qty"/>
+              <input type="number" class="os-input item-price" required step="0.01" min="0" placeholder="Unit Price (£)"/>
+              <button type="button" class="os-btn os-btn-danger os-btn-sm btn-remove-row" style="padding: 0.5rem;" title="Remove">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Totals Summary -->
+        <div style="background: var(--surface-bg); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem;">
+          <div class="os-flex-between" style="margin-bottom: 0.25rem;">
+            <span style="font-size: 0.8125rem; color: var(--text-muted);">Net Subtotal:</span>
+            <span style="font-family: var(--font-mono); font-weight: 600;" id="modal-calc-subtotal">£0.00</span>
+          </div>
+          <div class="os-flex-between" style="margin-bottom: 0.25rem;">
+            <span style="font-size: 0.8125rem; color: var(--text-muted);" id="modal-calc-vat-label">UK VAT (20%):</span>
+            <span style="font-family: var(--font-mono); font-weight: 600;" id="modal-calc-vat-amount">£0.00</span>
+          </div>
+          <div class="os-flex-between" style="border-top: 1px solid var(--border-medium); padding-top: 0.5rem; margin-top: 0.5rem;">
+            <span style="font-size: 1rem; font-weight: 700;">Total Amount Payable:</span>
+            <span style="font-family: var(--font-mono); font-size: 1.125rem; font-weight: 800; color: var(--brand-primary);" id="modal-calc-total">£0.00</span>
+          </div>
+        </div>
+
+        <div class="os-flex-between">
+          <button type="button" class="os-btn os-btn-secondary" id="btn-cancel-invoice">Cancel</button>
+          <button type="submit" class="os-btn os-btn-primary">
+            <span class="material-symbols-outlined text-[16px]">send</span>
+            <span>Issue & Disclose Invoice</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Printable Invoice Document Modal -->
+  <div class="os-modal-overlay" id="invoice-view-modal">
+    <div class="os-modal-box" id="printable-invoice-modal" style="max-width: 800px; background: #ffffff; color: #0f172a; padding: 2.5rem; border-radius: var(--radius-md);">
+      <div id="invoice-document-rendered">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="os-flex-between no-print" style="margin-top: 2rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+        <button type="button" class="os-btn os-btn-secondary" id="btn-close-invoice-view">Close Document</button>
+        <div style="display: flex; gap: 0.75rem;">
+          <button type="button" class="os-btn os-btn-primary" id="btn-pay-card-terminal" style="background: linear-gradient(135deg, #0ea5e9, #0284c7);">
+            <span class="material-symbols-outlined text-[16px]">contactless</span>
+            <span>Pay by Card Terminal</span>
+          </button>
+          <button type="button" class="os-btn os-btn-secondary" id="btn-mark-paid">
+            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+            <span>Mark Paid</span>
+          </button>
+          <button type="button" class="os-btn os-btn-primary" onclick="window.print()">
+            <span class="material-symbols-outlined text-[16px]">print</span>
+            <span>Print / Save PDF</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="design-system/client-config.js"></script>
+  <script src="assets/js/os-core.js"></script>
+  <script src="assets/js/payment-terminal.js"></script>
+  <script src="assets/js/invoice-engine.js"></script>
+  <script src="assets/js/stock-engine.js"></script>
+  <script src="assets/js/order-engine.js"></script>
+  <script src="assets/js/rota-engine.js"></script>
+  <script src="assets/js/forecast-engine.js"></script>
+  <script src="assets/js/autonomous-agent.js"></script>
+
+  <script>
+    let activeViewingInvoiceId = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      window.KallistoOS.renderSidebar('invoicing');
+      window.KallistoOS.renderTopbar('Invoices & UK VAT (MTD)');
+
+      // Set default due date to 14 days from today
+      const defaultDue = new Date();
+      defaultDue.setDate(defaultDue.getDate() + 14);
+      document.getElementById('due-date-input').value = defaultDue.toISOString().split('T')[0];
+
+      renderInvoicesList();
+      bindEvents();
+    });
+
+    function bindEvents() {
+      const modal = document.getElementById('new-invoice-modal');
+      document.getElementById('btn-open-new-invoice-modal')?.addEventListener('click', () => {
+        modal.classList.add('open');
+        updateModalCalculations();
+      });
+
+      document.getElementById('btn-close-invoice-modal')?.addEventListener('click', () => {
+        modal.classList.remove('open');
+      });
+
+      document.getElementById('btn-cancel-invoice')?.addEventListener('click', () => {
+        modal.classList.remove('open');
+      });
+
+      document.getElementById('btn-close-invoice-view')?.addEventListener('click', () => {
+        document.getElementById('invoice-view-modal').classList.remove('open');
+      });
+
+      // Add line item row
+      document.getElementById('btn-add-line-item')?.addEventListener('click', () => {
+        const container = document.getElementById('line-items-container');
+        const newRow = document.createElement('div');
+        newRow.className = 'line-item-row';
+        newRow.style.cssText = 'display: grid; grid-template-columns: 3fr 1fr 1.5fr 36px; gap: 0.5rem; align-items: center;';
+        newRow.innerHTML = `
+          <input type="text" class="os-input item-desc" required placeholder="Description of goods or service"/>
+          <input type="number" class="os-input item-qty" required min="1" value="1" placeholder="Qty"/>
+          <input type="number" class="os-input item-price" required step="0.01" min="0" placeholder="Unit Price (£)"/>
+          <button type="button" class="os-btn os-btn-danger os-btn-sm btn-remove-row" style="padding: 0.5rem;" title="Remove">✕</button>
+        `;
+        container.appendChild(newRow);
+        bindRowEvents(newRow);
+        updateModalCalculations();
+      });
+
+      // Bind existing rows
+      document.querySelectorAll('.line-item-row').forEach(row => bindRowEvents(row));
+
+      document.getElementById('vat-rate-select')?.addEventListener('change', updateModalCalculations);
+
+      // Handle form submission
+      document.getElementById('create-invoice-form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const clientName = document.getElementById('client-name-input').value.trim();
+        const clientEmail = document.getElementById('client-email-input').value.trim();
+        const clientVat = document.getElementById('client-vat-input').value.trim();
+        const dueDate = document.getElementById('due-date-input').value;
+        const vatRate = parseFloat(document.getElementById('vat-rate-select').value);
+
+        const items = [];
+        document.querySelectorAll('.line-item-row').forEach(row => {
+          const desc = row.querySelector('.item-desc').value.trim();
+          const qty = parseInt(row.querySelector('.item-qty').value, 10) || 1;
+          const unitPrice = parseFloat(row.querySelector('.item-price').value) || 0;
+          items.push({ desc, qty, unitPrice, amount: qty * unitPrice });
+        });
+
+        const totals = window.KallistoInvoiceEngine.calculateInvoiceTotals(items, vatRate);
+
+        const newInv = window.KallistoInvoiceEngine.createInvoice({
+          clientName,
+          clientEmail,
+          clientVat: clientVat || 'N/A',
+          dueDate,
+          subtotal: totals.subtotal,
+          vatRate: totals.vatRate,
+          vatAmount: totals.vatAmount,
+          total: totals.total,
+          items
+        });
+
+        modal.classList.remove('open');
+        document.getElementById('create-invoice-form').reset();
+        renderInvoicesList();
+        viewInvoiceDocument(newInv.id);
+      });
+
+      // Mark paid button in viewer
+      document.getElementById('btn-mark-paid')?.addEventListener('click', () => {
+        if (activeViewingInvoiceId) {
+          window.KallistoInvoiceEngine.updateStatus(activeViewingInvoiceId, 'paid');
+          document.getElementById('invoice-view-modal').classList.remove('open');
+          renderInvoicesList();
+        }
+      });
+
+      // Pay via Card Terminal in viewer
+      document.getElementById('btn-pay-card-terminal')?.addEventListener('click', () => {
+        if (activeViewingInvoiceId) {
+          const state = window.KallistoOS.getState();
+          const inv = state.invoices.find(i => i.id === activeViewingInvoiceId);
+          if (!inv) return;
+
+          window.PaymentTerminal.openModal({
+            amount: inv.total,
+            orderRef: inv.id,
+            items: inv.items.map(i => ({ name: i.desc, price: i.unitPrice, qty: i.qty })),
+            onSuccess: () => {
+              window.KallistoInvoiceEngine.updateStatus(activeViewingInvoiceId, 'paid');
+              document.getElementById('invoice-view-modal').classList.remove('open');
+              renderInvoicesList();
+            }
+          });
+        }
+      });
+    }
+
+    function bindRowEvents(row) {
+      row.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', updateModalCalculations);
+      });
+      row.querySelector('.btn-remove-row')?.addEventListener('click', () => {
+        if (document.querySelectorAll('.line-item-row').length > 1) {
+          row.remove();
+          updateModalCalculations();
+        } else {
+          alert('An invoice must contain at least one line item.');
+        }
+      });
+    }
+
+    function updateModalCalculations() {
+      const items = [];
+      document.querySelectorAll('.line-item-row').forEach(row => {
+        const qty = parseInt(row.querySelector('.item-qty').value, 10) || 0;
+        const unitPrice = parseFloat(row.querySelector('.item-price').value) || 0;
+        items.push({ qty, unitPrice });
+      });
+
+      const vatRate = parseFloat(document.getElementById('vat-rate-select').value);
+      const totals = window.KallistoInvoiceEngine.calculateInvoiceTotals(items, vatRate);
+
+      document.getElementById('modal-calc-subtotal').textContent = `£${totals.subtotal.toFixed(2)}`;
+      document.getElementById('modal-calc-vat-label').textContent = `UK VAT (${totals.vatRateLabel}):`;
+      document.getElementById('modal-calc-vat-amount').textContent = `£${totals.vatAmount.toFixed(2)}`;
+      document.getElementById('modal-calc-total').textContent = `£${totals.total.toFixed(2)}`;
+    }
+
+    function renderInvoicesList() {
+      const state = window.KallistoOS.getState();
+      const client = window.KallistoClients.getCurrentClient();
+      const tbody = document.getElementById('invoices-table-body');
+
+      let totalBilled = 0;
+      let totalVat = 0;
+      let overdueCount = 0;
+      let overdueDebt = 0;
+
+      state.invoices.forEach(inv => {
+        totalBilled += inv.total;
+        totalVat += inv.vatAmount;
+        if (inv.status === 'overdue') {
+          overdueCount++;
+          overdueDebt += inv.total;
+        }
+      });
+
+      document.getElementById('stat-total-billed').textContent = `${client.currency}${totalBilled.toLocaleString('en-GB', { minimumFractionDigits: 2 })}`;
+      document.getElementById('stat-total-vat').textContent = `${client.currency}${totalVat.toLocaleString('en-GB', { minimumFractionDigits: 2 })}`;
+      document.getElementById('stat-overdue-count').textContent = overdueCount;
+      document.getElementById('stat-overdue-debt').textContent = `${client.currency}${overdueDebt.toFixed(2)} overdue`;
+      document.getElementById('active-invoices-badge').textContent = `${state.invoices.length} Invoices`;
+
+      tbody.innerHTML = state.invoices.map(inv => `
+        <tr style="cursor: pointer;" onclick="viewInvoiceDocument('${inv.id}')">
+          <td style="font-family: var(--font-mono); font-weight: 700; color: var(--brand-primary);">${inv.id}</td>
+          <td>
+            <div style="font-weight: 600;">${inv.clientName}</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">${inv.clientEmail}</div>
+          </td>
+          <td style="font-size: 0.8125rem;">${inv.date}</td>
+          <td style="font-size: 0.8125rem; color: ${inv.status === 'overdue' ? 'var(--status-danger)' : 'var(--text-secondary)'}; font-weight: ${inv.status === 'overdue' ? '700' : '500'};">
+            ${inv.dueDate}
+          </td>
+          <td style="font-family: var(--font-mono);">${client.currency}${inv.subtotal.toFixed(2)}</td>
+          <td style="font-family: var(--font-mono);">${client.currency}${inv.vatAmount.toFixed(2)}</td>
+          <td style="font-family: var(--font-mono); font-weight: 700;">${client.currency}${inv.total.toFixed(2)}</td>
+          <td>
+            <span class="os-badge ${inv.status === 'paid' ? 'os-badge-success' : (inv.status === 'overdue' ? 'os-badge-danger' : 'os-badge-warning')}">
+              ${inv.status.toUpperCase()}
+            </span>
+          </td>
+          <td onclick="event.stopPropagation();">
+            <div style="display: flex; gap: 0.25rem;">
+              <button type="button" class="os-btn os-btn-secondary os-btn-sm" onclick="viewInvoiceDocument('${inv.id}')" title="View Document">
+                <span class="material-symbols-outlined text-[14px]">visibility</span>
+              </button>
+              ${inv.status !== 'paid' ? `
+                <button type="button" class="os-btn os-btn-primary os-btn-sm" onclick="quickMarkPaid('${inv.id}')" title="Mark as Paid">✓</button>
+              ` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function quickMarkPaid(invoiceId) {
+      window.KallistoInvoiceEngine.updateStatus(invoiceId, 'paid');
+      renderInvoicesList();
+    }
+
+    function viewInvoiceDocument(invoiceId) {
+      activeViewingInvoiceId = invoiceId;
+      const state = window.KallistoOS.getState();
+      const inv = state.invoices.find(i => i.id === invoiceId);
+      if (!inv) return;
+
+      const client = window.KallistoClients.getCurrentClient();
+      const lateData = inv.status === 'overdue' ? window.KallistoInvoiceEngine.calculateLatePaymentFees(inv.total, inv.dueDate) : null;
+
+      const docContainer = document.getElementById('invoice-document-rendered');
+      docContainer.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+          <div>
+            <div style="font-size: 1.5rem; font-weight: 800; font-family: var(--font-display); color: #0f172a;">${client.name}</div>
+            <div style="font-size: 0.8125rem; color: #475569; margin-top: 0.25rem;">${client.address}</div>
+            <div style="font-size: 0.8125rem; color: #475569;">Company Reg: <strong>${client.regNumber}</strong> | VAT: <strong>${client.vatNumber}</strong></div>
+            <div style="font-size: 0.8125rem; color: #475569;">Phone: ${client.phone} | Email: ${client.email}</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 1.5rem; font-weight: 800; color: var(--brand-primary); font-family: var(--font-mono);">${inv.id}</div>
+            <div style="font-size: 0.8125rem; color: #64748b; margin-top: 0.25rem;">TAX INVOICE (HMRC MTD)</div>
+            <div style="font-size: 0.8125rem; color: #0f172a; margin-top: 0.25rem;">Issue Date: <strong>${inv.date}</strong></div>
+            <div style="font-size: 0.8125rem; color: #0f172a;">Payment Due: <strong>${inv.dueDate}</strong></div>
+            <div style="margin-top: 0.5rem;">
+              <span class="os-badge ${inv.status === 'paid' ? 'os-badge-success' : (inv.status === 'overdue' ? 'os-badge-danger' : 'os-badge-warning')}">
+                STATUS: ${inv.status.toUpperCase()}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #f8fafc; padding: 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; border: 1px solid #e2e8f0;">
+          <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #64748b;">Billed To (Customer):</div>
+          <div style="font-weight: 700; font-size: 1rem; color: #0f172a; margin-top: 0.25rem;">${inv.clientName}</div>
+          <div style="font-size: 0.8125rem; color: #475569;">${inv.clientEmail}</div>
+          ${inv.clientVat && inv.clientVat !== 'N/A' ? `<div style="font-size: 0.8125rem; color: #475569;">VAT Registration: ${inv.clientVat}</div>` : ''}
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 0.875rem;">
+          <thead>
+            <tr style="border-bottom: 2px solid #0f172a; text-align: left;">
+              <th style="padding: 0.75rem 0.5rem; font-weight: 700;">Description</th>
+              <th style="padding: 0.75rem 0.5rem; text-align: center; font-weight: 700;">Qty</th>
+              <th style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 700;">Unit Price</th>
+              <th style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 700;">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${inv.items.map(item => `
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 0.75rem 0.5rem;">${item.desc}</td>
+                <td style="padding: 0.75rem 0.5rem; text-align: center;">${item.qty}</td>
+                <td style="padding: 0.75rem 0.5rem; text-align: right; font-family: var(--font-mono);">${client.currency}${item.unitPrice.toFixed(2)}</td>
+                <td style="padding: 0.75rem 0.5rem; text-align: right; font-family: var(--font-mono); font-weight: 600;">${client.currency}${item.amount.toFixed(2)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+          <div style="max-width: 380px; font-size: 0.75rem; color: #64748b; line-height: 1.5;">
+            <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.25rem;">Payment Terms & UK Faster Payments:</div>
+            <div>Bank: <strong>Barclays UK PLC</strong></div>
+            <div>Sort Code: <strong>20-45-18</strong> | Account: <strong>83920194</strong></div>
+            <div>Payment Reference: <strong>${inv.id}</strong></div>
+            <div style="margin-top: 0.5rem;">
+              Payment is strictly due within 14 days. We understand and will exercise our statutory right to claim interest and compensation for debt recovery costs under the Late Payment legislation if not paid according to agreed credit terms.
+            </div>
+          </div>
+
+          <div style="width: 260px; font-size: 0.875rem;">
+            <div style="display: flex; justify-content: space-between; padding: 0.25rem 0;">
+              <span style="color: #64748b;">Net Subtotal:</span>
+              <span style="font-family: var(--font-mono); font-weight: 600;">${client.currency}${inv.subtotal.toFixed(2)}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.25rem 0;">
+              <span style="color: #64748b;">UK VAT (${Math.round((inv.vatRate || 0.20) * 100)}%):</span>
+              <span style="font-family: var(--font-mono); font-weight: 600;">${client.currency}${inv.vatAmount.toFixed(2)}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-top: 2px solid #0f172a; margin-top: 0.5rem; font-size: 1.125rem; font-weight: 800;">
+              <span>Total Payable:</span>
+              <span style="font-family: var(--font-mono); color: var(--brand-primary);">${client.currency}${inv.total.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+
+        ${lateData ? `
+          <div style="background: #fef2f2; border: 1px solid #f87171; border-radius: var(--radius-sm); padding: 1rem; margin-top: 1rem; color: #991b1b; font-size: 0.8125rem;">
+            <div style="font-weight: 700; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.35rem;">
+              <span class="material-symbols-outlined text-[16px]">warning</span>
+              <span>STATUTORY LATE PAYMENT NOTICE (England & Wales)</span>
+            </div>
+            <div>This invoice is <strong>${lateData.daysOverdue} days overdue</strong>. In accordance with the <em>Late Payment of Commercial Debts (Interest) Act 1998</em>, the following statutory charges apply:</div>
+            <div style="display: flex; gap: 1.5rem; margin-top: 0.5rem; font-family: var(--font-mono);">
+              <div>Compensation Fee: <strong>£${lateData.compensationFee.toFixed(2)}</strong></div>
+              <div>Interest Accrued (${lateData.annualRatePercent}% p.a.): <strong>£${lateData.interestAccrued.toFixed(2)}</strong></div>
+              <div>Adjusted Total Due: <strong>£${lateData.totalDue.toFixed(2)}</strong></div>
+            </div>
+          </div>
+        ` : ''}
+      `;
+
+      document.getElementById('invoice-view-modal').classList.add('open');
+    }
+  </script>
+</body>
+</html>

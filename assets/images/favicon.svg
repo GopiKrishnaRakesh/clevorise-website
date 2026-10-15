@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="8" fill="#090d16"/>
+  <defs>
+    <linearGradient id="favHex" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0066ff"/>
+    </linearGradient>
+    <linearGradient id="favArr" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0066ff"/>
+      <stop offset="100%" stop-color="#00f0ff"/>
+    </linearGradient>
+  </defs>
+  <!-- Outer Hexagon -->
+  <polygon points="16,4 27,10 27,22 16,28 5,22 5,10" stroke="url(#favHex)" stroke-width="1.5" fill="#0f172a"/>
+  <!-- Core Glow -->
+  <polygon points="14,12 18,12 20,16 18,20 14,20 12,16" fill="url(#favHex)"/>
+  <!-- Growth Vector -->
+  <path d="M15 15 L23 7 M23 7 L19 7 M23 7 L23 11" stroke="url(#favArr)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

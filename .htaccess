@@ -1,0 +1,162 @@
+# ==============================================================================
+# CLEVORISE - PRODUCTION HOSTINGER (LITESPEED / APACHE) CONFIGURATION
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. REWRITE ENGINE & HTTPS REDIRECT
+# ------------------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Canonical host: www.clevorise.co.uk -> clevorise.co.uk (always over HTTPS)
+  RewriteCond %{HTTP_HOST} ^www\.clevorise\.co\.uk$ [NC]
+  RewriteRule ^ https://clevorise.co.uk%{REQUEST_URI} [L,R=301]
+
+  # Force HTTPS. Hostinger's CDN (hcdn) talks to this server over HTTP and sends
+  # X-Forwarded-Proto, so only redirect when NEITHER says https (an [OR] here loops).
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1) [NC]
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Clean URLs: /about serves about.html (existing files and folders are left alone)
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}\.html -f
+  RewriteRule ^([^.]+)$ $1.html [L]
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# 2. CUSTOM ERROR DOCUMENTS
+# ------------------------------------------------------------------------------
+ErrorDocument 404 /404.html
+
+# ------------------------------------------------------------------------------
+# 3. DIRECTORY BROWSING & SENSITIVE FILE PROTECTION
+# ------------------------------------------------------------------------------
+Options -Indexes
+
+# Block hidden files and dotfiles (.git, .env, .DS_Store, etc.)
+<FilesMatch "^\.">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# Block access to backup, source, and archive files
+<FilesMatch "(^#.*#|\.(bak|config|dist|fla|inc|ini|log|psd|sh|sql|sw[op]|zip|tar|gz)|~)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# ------------------------------------------------------------------------------
+# 4. MIME TYPES & ENCODING
+# ------------------------------------------------------------------------------
+<IfModule mod_mime.c>
+  AddType application/manifest+json          .webmanifest
+  AddType image/webp                         .webp
+  AddType image/svg+xml                      .svg .svgz
+  AddEncoding gzip                           .svgz
+  AddType font/woff2                         .woff2
+  AddType font/woff                          .woff
+  AddCharset UTF-8 .html .css .js .xml .json .rss .atom .webmanifest
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# 5. GZIP / DEFLATE COMPRESSION
+# ------------------------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE text/xml
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/json
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/atom+xml
+  AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+  AddOutputFilterByType DEFLATE font/ttf
+  AddOutputFilterByType DEFLATE font/otf
+  AddOutputFilterByType DEFLATE font/x-woff
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE image/x-icon
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# 6. BROWSER CACHING (EXPIRES HEADERS)
+# ------------------------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 month"
+
+  # HTML pages (short cache to allow fast updates)
+  ExpiresByType text/html "access plus 1 hour"
+
+  # Data / feeds
+  ExpiresByType application/json "access plus 0 seconds"
+  ExpiresByType application/xml "access plus 0 seconds"
+  ExpiresByType text/xml "access plus 0 seconds"
+  ExpiresByType application/manifest+json "access plus 1 week"
+
+  # CSS and JavaScript (versioned with ?v=)
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/javascript "access plus 1 year"
+
+  # Images and Media
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresByType video/mp4 "access plus 1 year"
+  ExpiresByType video/webm "access plus 1 year"
+
+  # Web Fonts
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType font/woff "access plus 1 year"
+  ExpiresByType font/ttf "access plus 1 year"
+  ExpiresByType font/otf "access plus 1 year"
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# 7. SECURITY HEADERS
+# ------------------------------------------------------------------------------
+<IfModule mod_headers.c>
+  # Marker: lets us confirm from outside that THIS file is the one the server is using
+  # (curl -sI https://clevorise.co.uk/ | grep -i x-clevorise-config)
+  Header always set X-Clevorise-Config "2026-10-15"
+
+  # Clickjacking defense
+  Header always set X-Frame-Options "SAMEORIGIN"
+
+  # MIME sniffing defense
+  Header always set X-Content-Type-Options "nosniff"
+
+  # Cross-site scripting (XSS) defense
+  Header always set X-XSS-Protection "1; mode=block"
+
+  # Referrer Policy
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Permissions Policy
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+
+  # Content Security Policy (permits Google Fonts, CDNjs Three.js, FormSubmit)
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://formsubmit.co https://formspree.io; frame-ancestors 'self'; form-action 'self' https://formsubmit.co https://formspree.io; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+</IfModule>

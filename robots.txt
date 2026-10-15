@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Disallow internal assets or system logs if any
+Disallow: /scratch/
+Disallow: /private/
+
+Sitemap: https://clevorise.co.uk/sitemap.xml

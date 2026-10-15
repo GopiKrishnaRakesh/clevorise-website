@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu Editor | CLEVORISE OS</title>
+  <meta name="description" content="Add, edit and price menu items, and link each one to the stock it uses, so every sale updates inventory automatically."/>
+
+  <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="design-system/design-tokens.css"/>
+  <link rel="stylesheet" href="design-system/components.css"/>
+  <link rel="stylesheet" href="assets/css/os-theme.css"/>
+</head>
+<body class="os-body">
+
+  <div class="os-layout">
+    <aside class="os-sidebar" aria-label="Main Navigation"></aside>
+
+    <main class="os-main">
+      <header class="os-topbar"></header>
+
+      <div class="os-page-content">
+
+        <!-- Page Header -->
+        <div class="os-flex-between" style="margin-bottom: 1.5rem;">
+          <div>
+            <h2 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: var(--text-primary);">
+              Menu Editor
+            </h2>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+              What the kiosk sells, at what price, and which stock each sale uses up.
+            </p>
+          </div>
+          <button type="button" class="os-btn os-btn-primary" id="btn-add-item">
+            <span class="material-symbols-outlined text-[18px]">add</span>
+            <span>Add Menu Item</span>
+          </button>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="os-stat-grid">
+          <div class="os-stat-card">
+            <div class="os-stat-label">Menu Items</div>
+            <div class="os-stat-value" id="stat-items">0</div>
+            <div class="os-stat-trend positive"><span>Live on the kiosk</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">Categories</div>
+            <div class="os-stat-value" id="stat-categories">0</div>
+            <div class="os-stat-trend neutral"><span>Kiosk tabs</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">Not Linked To Stock</div>
+            <div class="os-stat-value" id="stat-unlinked">0</div>
+            <div class="os-stat-trend neutral"><span>Sales use no stock</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">Needs Attention</div>
+            <div class="os-stat-value" id="stat-attention" style="color: var(--status-danger);">0</div>
+            <div class="os-stat-trend negative"><span>Linked stock low or out</span></div>
+          </div>
+        </div>
+
+        <!-- Search -->
+        <div class="os-card" style="margin-bottom: 1.5rem; padding: 1.25rem;">
+          <input type="search" id="search-menu-input" class="os-input" placeholder="Search by name or category..." aria-label="Search menu items" maxlength="60"/>
+        </div>
+
+        <!-- Menu Table -->
+        <div class="os-card">
+          <div class="os-table-wrapper">
+            <table class="os-table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Uses From Stock</th>
+                  <th>Dietary</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="menu-table-body">
+                <!-- Dynamic -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Add / Edit Item Modal -->
+  <div class="os-modal-overlay" id="item-modal">
+    <div class="os-modal-box" style="max-width: 600px;" role="dialog" aria-modal="true" aria-labelledby="item-modal-title">
+      <div class="os-flex-between" style="margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-subtle);">
+        <h3 id="item-modal-title" style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700;">Add Menu Item</h3>
+        <button type="button" class="os-btn os-btn-secondary os-btn-sm" id="btn-close-item" aria-label="Close">✕</button>
+      </div>
+
+      <form id="item-form" novalidate>
+        <input type="hidden" id="item-id"/>
+
+        <div class="os-grid-2">
+          <div class="os-form-group">
+            <label class="os-label" for="item-name">Item Name *</label>
+            <input type="text" id="item-name" class="os-input" required maxlength="60"/>
+          </div>
+          <div class="os-form-group">
+            <label class="os-label" for="item-price">Price (£, inc. VAT) *</label>
+            <input type="number" id="item-price" class="os-input" required step="0.01" min="0.01" max="9999"/>
+          </div>
+        </div>
+
+        <div class="os-form-group">
+          <label class="os-label" for="item-category">Category *</label>
+          <input type="text" id="item-category" class="os-input" required maxlength="40" list="category-options" placeholder="Pick one or type a new category"/>
+          <datalist id="category-options"></datalist>
+        </div>
+
+        <div class="os-form-group">
+          <label class="os-label" for="item-desc">Description</label>
+          <textarea id="item-desc" class="os-textarea" rows="2" maxlength="200" placeholder="Shown to customers on the kiosk"></textarea>
+        </div>
+
+        <div class="os-form-group">
+          <span class="os-label">Dietary</span>
+          <div id="item-dietary" style="display: flex; gap: 1rem; flex-wrap: wrap;"></div>
+        </div>
+
+        <div style="background: var(--surface-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1rem;">
+          <div style="font-weight: 700; font-size: 0.875rem; margin-bottom: 0.75rem;">Stock used by each sale</div>
+          <div class="os-grid-2">
+            <div class="os-form-group" style="margin-bottom: 0;">
+              <label class="os-label" for="item-sku">Stock Item</label>
+              <select id="item-sku" class="os-select"></select>
+            </div>
+            <div class="os-form-group" style="margin-bottom: 0;">
+              <label class="os-label" for="item-portions" id="item-portions-label">Used per sale</label>
+              <input type="number" id="item-portions" class="os-input" min="1" max="100000" step="1" value="1"/>
+            </div>
+          </div>
+          <p id="item-link-hint" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.625rem;"></p>
+        </div>
+
+        <div class="os-flex-between" style="margin-top: 1.5rem;">
+          <button type="button" class="os-btn os-btn-secondary" id="btn-cancel-item">Cancel</button>
+          <button type="submit" class="os-btn os-btn-primary" id="btn-save-item">Save Item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="os-modal-overlay" id="delete-modal">
+    <div class="os-modal-box" style="max-width: 420px;" role="alertdialog" aria-modal="true" aria-labelledby="delete-modal-title">
+      <h3 id="delete-modal-title" style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Remove from menu?</h3>
+      <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.5rem;" id="delete-modal-text"></p>
+      <input type="hidden" id="delete-item-id"/>
+      <div class="os-flex-between">
+        <button type="button" class="os-btn os-btn-secondary" id="btn-cancel-delete">Keep It</button>
+        <button type="button" class="os-btn os-btn-primary" id="btn-confirm-delete" style="background: var(--status-danger);">Remove Item</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="design-system/client-config.js"></script>
+  <script src="assets/js/os-core.js"></script>
+  <script src="assets/js/stock-engine.js"></script>
+  <script src="assets/js/invoice-engine.js"></script>
+  <script src="assets/js/order-engine.js"></script>
+  <script src="assets/js/rota-engine.js"></script>
+  <script src="assets/js/forecast-engine.js"></script>
+  <script src="assets/js/autonomous-agent.js"></script>
+
+  <script>
+    const DIETARY_TAGS = ['Vegan', 'Vegetarian', 'Gluten-Free', 'Dairy-Free'];
+    const esc = (t) => window.KallistoOS.escapeHtml(t);
+    const $ = (id) => document.getElementById(id);
+    let searchQuery = '';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      window.KallistoOS.renderSidebar('menu');
+      window.KallistoOS.renderTopbar('Menu Editor');
+
+      $('item-dietary').innerHTML = DIETARY_TAGS.map(tag => `
+        <label style="display: flex; align-items: center; gap: 0.375rem; font-size: 0.8125rem; cursor: pointer;">
+          <input type="checkbox" name="dietary" value="${tag}"/> ${tag}
+        </label>`).join('');
+
+      bindEvents();
+      renderMenu();
+
+      // Stock changed elsewhere (a sale, a delivery), or another tab edited the menu
+      window.addEventListener('storage', (e) => { if (e.key === window.KallistoOS.STORAGE_KEY) renderMenu(); });
+    });
+
+    /* ---------- helpers ---------- */
+
+    function unitLabel(sku, qty) {
+      const per = sku.portionsPerUnit || 1;
+      if (per > 1) return sku.portionUnit || 'portions';
+      return qty === 1 ? 'unit' : 'units';
+    }
+
+    function stockStatus(sku) {
+      if (sku.stock <= 0) return { text: 'Out of stock', cls: 'os-badge-danger' };
+      if (sku.stock <= sku.minThreshold) return { text: 'Low stock', cls: 'os-badge-warning' };
+      return null;
+    }
+
+    function nextItemId(menu) {
+      const nums = menu.map(m => /^MNU-(\d+)$/.exec(m.id)).filter(Boolean).map(m => parseInt(m[1], 10));
+      return 'MNU-' + String((nums.length ? Math.max(...nums) : 0) + 1).padStart(2, '0');
+    }
+
+    /* ---------- rendering ---------- */
+
+    function renderMenu() {
+      const state = window.KallistoOS.getState();
+      const client = window.KallistoClients.getCurrentClient();
+      const skuById = Object.fromEntries(state.inventory.map(i => [i.id, i]));
+
+      let unlinked = 0, attention = 0;
+      state.menu.forEach(item => {
+        if (!item.linkedSku) { unlinked++; return; }
+        const sku = skuById[item.linkedSku];
+        if (!sku || stockStatus(sku)) attention++;
+      });
+      $('stat-items').textContent = state.menu.length;
+      $('stat-categories').textContent = new Set(state.menu.map(m => m.category)).size;
+      $('stat-unlinked').textContent = unlinked;
+      $('stat-attention').textContent = attention;
+
+      const q = searchQuery.trim().toLowerCase();
+      const rows = state.menu.filter(m => !q || m.name.toLowerCase().includes(q) || m.category.toLowerCase().includes(q));
+      const tbody = $('menu-table-body');
+
+      if (state.menu.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">The menu is empty. Add your first item to put it on the kiosk.</td></tr>`;
+        return;
+      }
+      if (rows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No menu items match your search.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map(item => {
+        let link;
+        if (!item.linkedSku) {
+          link = `<span class="os-badge os-badge-warning">Not linked</span>`;
+        } else {
+          const sku = skuById[item.linkedSku];
+          if (!sku) {
+            link = `<span class="os-badge os-badge-danger">Stock item missing</span>`;
+          } else {
+            const p = item.portionsPerSale || 1;
+            const status = stockStatus(sku);
+            link = `<div style="font-size: 0.8125rem; font-weight: 600;">${p.toLocaleString('en-GB')} ${esc(unitLabel(sku, p))} of ${esc(sku.name)}</div>` +
+                   (status ? `<span class="os-badge ${status.cls}" style="margin-top: 0.25rem;">${status.text}</span>` : '');
+          }
+        }
+        return `
+          <tr>
+            <td>
+              <div style="font-weight: 700;">${esc(item.name)}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); max-width: 320px;">${esc(item.desc || '')}</div>
+            </td>
+            <td style="font-size: 0.8125rem; color: var(--text-muted);">${esc(item.category)}</td>
+            <td style="font-family: var(--font-mono); font-weight: 700;">${esc(client.currency)}${item.price.toFixed(2)}</td>
+            <td>${link}</td>
+            <td>${(item.dietary || []).map(d => `<span class="os-badge os-badge-info" style="font-size: 0.6875rem; margin-right: 0.25rem;">${esc(d)}</span>`).join('') || '<span style="color: var(--text-muted);">-</span>'}</td>
+            <td>
+              <div style="display: flex; gap: 0.25rem;">
+                <button type="button" class="os-btn os-btn-secondary os-btn-sm" data-action="edit" data-id="${esc(item.id)}" title="Edit item" aria-label="Edit ${esc(item.name)}">
+                  <span class="material-symbols-outlined text-[14px]">edit</span>
+                </button>
+                <button type="button" class="os-btn os-btn-secondary os-btn-sm" data-action="delete" data-id="${esc(item.id)}" title="Remove item" aria-label="Remove ${esc(item.name)}">
+                  <span class="material-symbols-outlined text-[14px]">delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    /* ---------- add / edit ---------- */
+
+    function fillSkuOptions(selected) {
+      const inv = window.KallistoOS.getState().inventory;
+      $('item-sku').innerHTML = `<option value="">No stock link</option>` +
+        inv.map(i => `<option value="${esc(i.id)}" ${i.id === selected ? 'selected' : ''}>${esc(i.name)} (${esc(i.id)})</option>`).join('');
+      // A link to a stock item that no longer exists stays visible so it can be fixed
+      if (selected && !inv.some(i => i.id === selected)) {
+        $('item-sku').insertAdjacentHTML('beforeend', `<option value="${esc(selected)}" selected>${esc(selected)} (missing)</option>`);
+      }
+    }
+
+    function updateLinkHint() {
+      const skuId = $('item-sku').value;
+      const portionsInput = $('item-portions');
+      const hint = $('item-link-hint');
+      const label = $('item-portions-label');
+      portionsInput.disabled = !skuId;
+      if (!skuId) {
+        label.textContent = 'Used per sale';
+        hint.textContent = 'Not linked: selling this item will not use up any stock.';
+        return;
+      }
+      const sku = window.KallistoOS.getState().inventory.find(i => i.id === skuId);
+      if (!sku) { label.textContent = 'Used per sale'; hint.textContent = 'This stock item no longer exists. Choose another or remove the link.'; return; }
+      const per = sku.portionsPerUnit || 1;
+      const p = parseInt(portionsInput.value, 10) || 1;
+      const unit = unitLabel(sku, 2);
+      label.textContent = per > 1 ? `Used per sale (${unit})` : 'Used per sale (units)';
+      if (per > 1) {
+        hint.textContent = p > per
+          ? `One ${sku.name} unit holds ${per.toLocaleString('en-GB')} ${unit}, so each sale uses more than a whole unit.`
+          : `One ${sku.name} unit holds ${per.toLocaleString('en-GB')} ${unit}: about ${Math.floor(per / p).toLocaleString('en-GB')} sales per unit.`;
+      } else {
+        hint.textContent = `Each sale uses ${p} ${p === 1 ? 'unit' : 'units'} of ${sku.name}.`;
+      }
+    }
+
+    function openItemForm(id) {
+      const state = window.KallistoOS.getState();
+      const item = id ? state.menu.find(m => m.id === id) : null;
+      $('item-form').reset();
+      $('item-name').setCustomValidity('');
+      $('item-id').value = item ? item.id : '';
+      $('item-modal-title').textContent = item ? 'Edit Menu Item' : 'Add Menu Item';
+      $('btn-save-item').textContent = item ? 'Save Changes' : 'Add To Menu';
+
+      $('category-options').innerHTML = [...new Set(state.menu.map(m => m.category))].map(c => `<option value="${esc(c)}"></option>`).join('');
+      fillSkuOptions(item ? item.linkedSku : '');
+
+      if (item) {
+        $('item-name').value = item.name;
+        $('item-price').value = item.price.toFixed(2);
+        $('item-category').value = item.category;
+        $('item-desc').value = item.desc || '';
+        $('item-portions').value = item.portionsPerSale || 1;
+        document.querySelectorAll('#item-dietary input').forEach(cb => { cb.checked = (item.dietary || []).includes(cb.value); });
+      }
+      updateLinkHint();
+      $('item-modal').classList.add('open');
+      $('item-name').focus();
+    }
+
+    function saveItem() {
+      const state = window.KallistoOS.getState();
+      const form = $('item-form');
+      const id = $('item-id').value;
+      const name = $('item-name').value.trim();
+
+      // Names must be unique so orders and the kitchen can tell items apart
+      const clash = state.menu.some(m => m.id !== id && m.name.trim().toLowerCase() === name.toLowerCase());
+      $('item-name').setCustomValidity(clash ? 'An item with this name is already on the menu.' : '');
+      if (!name) $('item-name').setCustomValidity('Please enter a name.');
+      $('item-category').setCustomValidity($('item-category').value.trim() ? '' : 'Please enter a category.');
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+
+      const skuId = $('item-sku').value;
+      const portions = Math.max(1, parseInt($('item-portions').value, 10) || 1);
+      const fields = {
+        name,
+        price: Math.round(parseFloat($('item-price').value) * 100) / 100,
+        category: $('item-category').value.trim(),
+        desc: $('item-desc').value.trim(),
+        dietary: [...document.querySelectorAll('#item-dietary input:checked')].map(cb => cb.value)
+      };
+
+      const existing = id ? state.menu.find(m => m.id === id) : null;
+      const item = existing || { id: nextItemId(state.menu), ingredients: [], image: '' };
+      Object.assign(item, fields);
+      // Stock link: portionsPerSale is only stored when it differs from the default of 1
+      if (skuId) { item.linkedSku = skuId; } else { delete item.linkedSku; }
+      if (skuId && portions > 1) { item.portionsPerSale = portions; } else { delete item.portionsPerSale; }
+      if (!existing) state.menu.push(item);
+
+      window.KallistoOS.saveState(state);
+      window.KallistoOS.logAutomation(existing ? 'MENU_ITEM_UPDATED' : 'MENU_ITEM_ADDED',
+        `${existing ? 'Menu item updated' : 'New menu item added'}: ${item.name} (${item.id}) at £${item.price.toFixed(2)}.`);
+      window.KallistoOS.bus.emit('menuUpdated', item);
+      closeModals();
+      renderMenu();
+    }
+
+    /* ---------- delete ---------- */
+
+    function askDelete(id) {
+      const item = window.KallistoOS.getState().menu.find(m => m.id === id);
+      if (!item) return;
+      $('delete-item-id').value = id;
+      $('delete-modal-text').textContent = `"${item.name}" will disappear from the kiosk. Past orders keep their record of it, and your stock is not changed.`;
+      $('delete-modal').classList.add('open');
+      $('btn-cancel-delete').focus();
+    }
+
+    function confirmDelete() {
+      const state = window.KallistoOS.getState();
+      const id = $('delete-item-id').value;
+      const item = state.menu.find(m => m.id === id);
+      if (!item) { closeModals(); return; }
+      state.menu = state.menu.filter(m => m.id !== id);
+      window.KallistoOS.saveState(state);
+      window.KallistoOS.logAutomation('MENU_ITEM_REMOVED', `Menu item removed: ${item.name} (${item.id}).`);
+      window.KallistoOS.bus.emit('menuUpdated', item);
+      closeModals();
+      renderMenu();
+    }
+
+    function closeModals() {
+      $('item-modal').classList.remove('open');
+      $('delete-modal').classList.remove('open');
+    }
+
+    /* ---------- events ---------- */
+
+    function bindEvents() {
+      $('btn-add-item').addEventListener('click', () => openItemForm(null));
+      $('btn-close-item').addEventListener('click', closeModals);
+      $('btn-cancel-item').addEventListener('click', closeModals);
+      $('btn-cancel-delete').addEventListener('click', closeModals);
+      $('btn-confirm-delete').addEventListener('click', confirmDelete);
+      $('item-form').addEventListener('submit', (e) => { e.preventDefault(); saveItem(); });
+      $('item-sku').addEventListener('change', () => { $('item-portions').value = 1; updateLinkHint(); });
+      $('item-portions').addEventListener('input', updateLinkHint);
+      $('item-name').addEventListener('input', (e) => e.target.setCustomValidity(''));
+      $('item-category').addEventListener('input', (e) => e.target.setCustomValidity(''));
+      $('search-menu-input').addEventListener('input', (e) => { searchQuery = e.target.value; renderMenu(); });
+      $('menu-table-body').addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-action]');
+        if (!btn) return;
+        if (btn.dataset.action === 'edit') openItemForm(btn.dataset.id);
+        else askDelete(btn.dataset.id);
+      });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModals(); });
+    }
+  </script>
+</body>
+</html>

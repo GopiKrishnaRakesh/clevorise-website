@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UK Local SEO & Growth Marketing | CLEVORISE OS</title>
+  <meta name="description" content="UK Local SEO auditor, Schema.org JSON-LD generator, Google Business audit, and automated review response engine."/>
+  
+  <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+  
+  <link rel="stylesheet" href="design-system/design-tokens.css"/>
+  <link rel="stylesheet" href="design-system/components.css"/>
+  <link rel="stylesheet" href="assets/css/os-theme.css"/>
+</head>
+<body class="os-body">
+
+  <div class="os-layout">
+    <aside class="os-sidebar" aria-label="Main Navigation"></aside>
+
+    <main class="os-main">
+      <header class="os-topbar"></header>
+
+      <div class="os-page-content">
+
+        <!-- Page Header -->
+        <div class="os-flex-between" style="margin-bottom: 1.5rem;">
+          <div>
+            <h2 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: var(--text-primary);">
+              UK Local SEO & Growth Engine
+            </h2>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+              Automate local high street search rankings, Google Business profile consistency, Schema.org microdata, and customer review replies.
+            </p>
+          </div>
+          <button type="button" class="os-btn os-btn-primary" id="btn-run-seo-audit">
+            <span class="material-symbols-outlined text-[18px]">travel_explore</span>
+            <span>Run Local SEO Audit</span>
+          </button>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="os-stat-grid">
+          <div class="os-stat-card">
+            <div class="os-stat-label">Local SEO Health Score</div>
+            <div class="os-stat-value" style="color: var(--status-success);">98 / 100</div>
+            <div class="os-stat-trend positive"><span>Top 3 Local Pack</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">NAP Consistency Check</div>
+            <div class="os-stat-value">100% Match</div>
+            <div class="os-stat-trend positive"><span>Google, Apple & Bing Maps</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">Google 5-Star Reviews</div>
+            <div class="os-stat-value">4.9 ★ (142)</div>
+            <div class="os-stat-trend positive"><span>Autonomous Replies Active</span></div>
+          </div>
+          <div class="os-stat-card">
+            <div class="os-stat-label">Schema.org Microdata</div>
+            <div class="os-stat-value">Valid JSON-LD</div>
+            <div class="os-stat-trend positive"><span>Rich Snippets Enabled</span></div>
+          </div>
+        </div>
+
+        <!-- 2-Column SEO Grid -->
+        <div class="os-grid-2">
+          
+          <!-- Column 1: Schema.org Generator & NAP Consistency -->
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- Schema Generator Card -->
+            <div class="os-card">
+              <div class="os-card-header">
+                <div>
+                  <h3 class="os-card-title">Schema.org JSON-LD Structured Data</h3>
+                  <div class="os-card-desc">Injects rich search snippets for opening hours, menus, prices, and location</div>
+                </div>
+                <button type="button" class="os-btn os-btn-secondary os-btn-sm" id="btn-copy-schema">
+                  <span class="material-symbols-outlined text-[14px]">content_copy</span>
+                  <span>Copy JSON-LD</span>
+                </button>
+              </div>
+
+              <div class="os-form-group">
+                <label class="os-label" for="schema-type-select">Business Schema Type</label>
+                <select id="schema-type-select" class="os-select">
+                  <option value="Restaurant">Hospitality & Cafe (Restaurant / FoodEstablishment)</option>
+                  <option value="Store">Retail & Boutique (Store / ClothingStore)</option>
+                  <option value="ProfessionalService">Professional Services & Advisory</option>
+                </select>
+              </div>
+
+              <div style="background: #0f172a; border-radius: var(--radius-md); padding: 1.25rem; font-family: var(--font-mono); font-size: 0.75rem; color: #38bdf8; overflow-x: auto; max-height: 280px;">
+                <pre id="schema-code-output"></pre>
+              </div>
+            </div>
+
+            <!-- NAP Consistency Card -->
+            <div class="os-card">
+              <div class="os-card-header">
+                <div>
+                  <h3 class="os-card-title">Local UK NAP Verification</h3>
+                  <div class="os-card-desc">Name, Address, and Phone verification across British business directories</div>
+                </div>
+                <span class="os-badge os-badge-success">Verified</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.8125rem;">
+                <div class="os-flex-between" style="padding: 0.5rem; background: var(--surface-bg); border-radius: var(--radius-sm);">
+                  <span>Registered Name:</span>
+                  <strong id="nap-name">CLEVORISE UK</strong>
+                </div>
+                <div class="os-flex-between" style="padding: 0.5rem; background: var(--surface-bg); border-radius: var(--radius-sm);">
+                  <span>Physical Address:</span>
+                  <strong id="nap-address">London, United Kingdom</strong>
+                </div>
+                <div class="os-flex-between" style="padding: 0.5rem; background: var(--surface-bg); border-radius: var(--radius-sm);">
+                  <span>Freephone Helpline:</span>
+                  <strong id="nap-phone">0800 525 5478</strong>
+                </div>
+                <div class="os-flex-between" style="padding: 0.5rem; background: var(--surface-bg); border-radius: var(--radius-sm);">
+                  <span>Postal Jurisdiction:</span>
+                  <strong>United Kingdom (GB)</strong>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Column 2: Review Autopilot & Footfall Social Generator -->
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- Automated Review Response Generator -->
+            <div class="os-card">
+              <div class="os-card-header">
+                <div>
+                  <h3 class="os-card-title">Automated Review Response Engine</h3>
+                  <div class="os-card-desc">AI-generated reply drafts tailored to British boutique customer service etiquette</div>
+                </div>
+                <span class="os-badge os-badge-info">Google & Trustpilot</span>
+              </div>
+
+              <div class="os-form-group">
+                <label class="os-label" for="review-customer-input">Customer Review Text</label>
+                <textarea id="review-customer-input" class="os-textarea" rows="3">"Exceptional single origin coffee and beautiful ceramic homeware in London. The staff were remarkably welcoming!"</textarea>
+              </div>
+
+              <div class="os-flex-between" style="margin-bottom: 1rem;">
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <button type="button" class="os-btn os-btn-secondary os-btn-sm active" data-tone="warm">Warm & Grateful</button>
+                  <button type="button" class="os-btn os-btn-secondary os-btn-sm" data-tone="professional">Professional</button>
+                  <button type="button" class="os-btn os-btn-secondary os-btn-sm" data-tone="concise">Concise</button>
+                </div>
+                <button type="button" class="os-btn os-btn-primary os-btn-sm" id="btn-generate-reply">
+                  Generate Reply
+                </button>
+              </div>
+
+              <div style="background: var(--surface-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem;">
+                <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.25rem;">Generated Reply:</div>
+                <p style="font-size: 0.875rem; color: var(--text-primary); line-height: 1.5;" id="review-reply-output">
+                  "Thank you so much for visiting us! We are thrilled you enjoyed our single origin coffee and artisan ceramics. We take immense pride in our craft, and we look forward to welcoming you back again soon."
+                </p>
+              </div>
+            </div>
+
+            <!-- Social Footfall Caption Scheduler -->
+            <div class="os-card">
+              <div class="os-card-header">
+                <div>
+                  <h3 class="os-card-title">High Street Footfall Campaign Builder</h3>
+                  <div class="os-card-desc">Geo-targeted UK hashtags and caption templates to drive local walk-ins</div>
+                </div>
+                <button type="button" class="os-btn os-btn-secondary os-btn-sm" id="btn-refresh-caption">
+                  <span class="material-symbols-outlined text-[14px]">refresh</span>
+                  <span>New Template</span>
+                </button>
+              </div>
+
+              <div style="background: var(--surface-bg); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); margin-bottom: 1rem;">
+                <div style="font-size: 0.875rem; color: var(--text-primary); line-height: 1.5;" id="social-caption-text">
+                  "Fresh morning bakes just out of the oven paired with our single origin Ethiopian roast. Drop by our studio today — table seating and express counter service ready. ☕🥐"
+                </div>
+                <div style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--brand-primary); font-family: var(--font-mono);" id="social-hashtags">
+                  #LondonCoffee #UKSmallBiz #ArtisanRoastery #ShopLocalUK #SpecialtyCoffee #HighStreetBritain
+                </div>
+              </div>
+
+              <button type="button" class="os-btn os-btn-primary os-btn-sm" onclick="copyCaption()">
+                <span class="material-symbols-outlined text-[14px]">share</span>
+                <span>Copy Caption to Clipboard</span>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="design-system/client-config.js"></script>
+  <script src="assets/js/os-core.js"></script>
+  <script src="assets/js/stock-engine.js"></script>
+  <script src="assets/js/invoice-engine.js"></script>
+  <script src="assets/js/order-engine.js"></script>
+  <script src="assets/js/rota-engine.js"></script>
+  <script src="assets/js/forecast-engine.js"></script>
+  <script src="assets/js/autonomous-agent.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      window.KallistoOS.renderSidebar('seo');
+      window.KallistoOS.renderTopbar('UK Local SEO & Growth');
+
+      renderSeoData();
+      bindSeoEvents();
+    });
+
+    function renderSeoData() {
+      const client = window.KallistoClients.getCurrentClient();
+      document.getElementById('nap-name').textContent = client.name;
+      document.getElementById('nap-address').textContent = client.address;
+      document.getElementById('nap-phone').textContent = client.phone;
+
+      updateSchemaOutput();
+    }
+
+    function updateSchemaOutput() {
+      const client = window.KallistoClients.getCurrentClient();
+      const type = document.getElementById('schema-type-select').value;
+
+      const schema = {
+        "@context": "https://schema.org",
+        "@type": type,
+        "name": client.name,
+        "description": client.tagline,
+        "telephone": client.phone,
+        "email": client.email,
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": client.address,
+          "addressCountry": "GB"
+        },
+        "currenciesAccepted": client.currencyCode,
+        "paymentAccepted": "Cash, Credit Card, Apple Pay, UK Faster Payments",
+        "priceRange": "££",
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "opens": "07:30",
+            "closes": "18:00"
+          },
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Saturday", "Sunday"],
+            "opens": "08:30",
+            "closes": "17:30"
+          }
+        ]
+      };
+
+      document.getElementById('schema-code-output').textContent = JSON.stringify(schema, null, 2);
+    }
+
+    function bindSeoEvents() {
+      document.getElementById('schema-type-select')?.addEventListener('change', updateSchemaOutput);
+
+      document.getElementById('btn-copy-schema')?.addEventListener('click', () => {
+        const text = document.getElementById('schema-code-output').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          alert('Schema.org JSON-LD copied to clipboard!');
+        }).catch(() => {
+          alert('Copy failed. Select the code and copy it manually.');
+        });
+      });
+
+      document.getElementById('btn-run-seo-audit')?.addEventListener('click', () => {
+        alert('Audit Complete: 100% NAP consistency verified across Google Maps, Apple Maps, and Bing Places. Meta tags and canonical links are 100% compliant with UK guidelines.');
+      });
+
+      // Review response generator
+      document.getElementById('btn-generate-reply')?.addEventListener('click', () => {
+        const customerText = document.getElementById('review-customer-input').value;
+        const client = window.KallistoClients.getCurrentClient();
+        document.getElementById('review-reply-output').textContent = 
+          `"Thank you so much for your kind words! Everyone at ${client.name} appreciates your feedback, and we look forward to seeing you again soon!"`;
+      });
+    }
+
+    function copyCaption() {
+      const caption = document.getElementById('social-caption-text').textContent;
+      const tags = document.getElementById('social-hashtags').textContent;
+      navigator.clipboard.writeText(`${caption}\n\n${tags}`).then(() => {
+        alert('Social caption copied to clipboard!');
+      }).catch(() => {
+        alert('Copy failed. Select the caption and copy it manually.');
+      });
+    }
+  </script>
+</body>
+</html>

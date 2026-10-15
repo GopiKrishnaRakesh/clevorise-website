@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mission Control | CLEVORISE Autonomous Business OS</title>
+  <meta name="description" content="CLEVORISE OS Executive Mission Control: Automated Invoicing, Real-Time Stock, Rota, P&L Forecast and Autonomous Operations for UK Small Businesses."/>
+  
+  <!-- Favicons & PWA Manifest -->
+  <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml"/>
+  <link rel="icon" href="../assets/images/favicon-32x32.png" type="image/png" sizes="32x32"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+
+  <!-- Design System & Theme Stylesheets -->
+  <link rel="stylesheet" href="design-system/design-tokens.css"/>
+  <link rel="stylesheet" href="design-system/components.css"/>
+  <link rel="stylesheet" href="assets/css/os-theme.css"/>
+</head>
+<body class="os-body">
+
+  <div class="os-layout">
+    <!-- Collapsible Accessible Sidebar -->
+    <aside class="os-sidebar" aria-label="Main Navigation"></aside>
+
+    <!-- Main Application Canvas -->
+    <main class="os-main">
+      <!-- Topbar Header -->
+      <header class="os-topbar"></header>
+
+      <!-- Dashboard Content -->
+      <div class="os-page-content">
+        
+        <!-- Welcome Hero Banner & Autonomous Simulator Trigger -->
+        <div class="os-card" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; border: none;">
+          <div class="os-flex-between" style="flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+                <span class="os-pulse-dot"></span>
+                <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--brand-primary);">
+                  Autonomous Operations Active
+                </span>
+              </div>
+              <h2 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em;">
+                Executive Mission Control
+              </h2>
+              <p style="font-size: 0.875rem; color: #94a3b8; max-width: 600px; margin-top: 0.25rem;">
+                Your UK business is operating autonomously. Inventory levels auto-replenish, MTD tax ledgers sync on dispatch, and labour efficiency is monitored in real-time with minimal human interference.
+              </p>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+              <button type="button" class="os-btn os-btn-secondary os-btn-sm" id="btn-simulate-order" style="background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); color: #ffffff;">
+                <span class="material-symbols-outlined text-[16px]">smart_toy</span>
+                <span>Simulate Customer Order</span>
+              </button>
+              <a href="automation-rules.html" class="os-btn os-btn-primary os-btn-sm">
+                <span class="material-symbols-outlined text-[16px]">tune</span>
+                <span>View Rules Engine</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI Metric Cards Grid -->
+        <div class="os-stat-grid" id="kpi-metrics-grid">
+          <!-- Rendered dynamically by script -->
+        </div>
+
+        <!-- 2-Column Operational Grid -->
+        <div class="os-grid-2-1">
+          
+          <!-- Left Column: Live Queue & Invoices -->
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- Live Self-Orders & Fulfillment Queue Card -->
+            <div class="os-card">
+              <div class="os-card-header">
+                <div>
+                  <h3 class="os-card-title">Live Fulfillment Queue (KDS)</h3>
+                  <div class="os-card-desc">Real-time orders dispatched from self-ordering kiosks and online checkout</div>
+                </div>
+                <a href="kitchen-display.html" class="os-btn os-btn-secondary os-btn-sm">Open KDS Screen</a>
+              </div>
+
+              <div class="os-table-wrapper">
+                <table class="os-table">
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Location / Table</th>
+                      <th>Items</th>
+                      <th>Total</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboard-orders-tbody">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Recent Invoices & MTD Ledger Card -->
+            <div class="os-card">
+              <div class="os-card-header">
+                <div>
+                  <h3 class="os-card-title">Recent Invoices & HMRC MTD Log</h3>
+                  <div class="os-card-desc">UK standard 20% VAT calculations with statutory late payment protection</div>
+                </div>
+                <a href="invoice-generator.html" class="os-btn os-btn-primary os-btn-sm">Create Invoice</a>
+              </div>
+
+              <div class="os-table-wrapper">
+                <table class="os-table">
+                  <thead>
+                    <tr>
+                      <th>Invoice</th>
+                      <th>Client</th>
+                      <th>Due Date</th>
+                      <th>VAT (20%)</th>
+                      <th>Total</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboard-invoices-tbody">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Autonomous Event Stream & Low Stock Watchdog -->
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- Low-Stock Alerts & Auto-Reorder Card -->
+            <div class="os-card">
+              <div class="os-card-header">
+                <div>
+                  <h3 class="os-card-title">Inventory Watchdog</h3>
+                  <div class="os-card-desc">Auto-replenishment triggers when stock dips below threshold</div>
+                </div>
+                <a href="stock-management.html" class="os-btn os-btn-secondary os-btn-sm">Inventory</a>
+              </div>
+
+              <div id="dashboard-stock-alerts" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <!-- Dynamic -->
+              </div>
+            </div>
+
+            <!-- Autonomous Log Stream -->
+            <div class="os-card">
+              <div class="os-card-header">
+                <div>
+                  <h3 class="os-card-title">Autonomous Action Stream</h3>
+                  <div class="os-card-desc">Zero human interference event trace</div>
+                </div>
+                <span class="os-badge os-badge-success">Live Event Bus</span>
+              </div>
+
+              <div class="automation-log-list" id="dashboard-automation-logs">
+                <!-- Dynamic -->
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Core Scripts -->
+  <script src="design-system/client-config.js"></script>
+  <script src="assets/js/os-core.js"></script>
+  <script src="assets/js/invoice-engine.js"></script>
+  <script src="assets/js/stock-engine.js"></script>
+  <script src="assets/js/order-engine.js"></script>
+  <script src="assets/js/rota-engine.js"></script>
+  <script src="assets/js/forecast-engine.js"></script>
+  <script src="assets/js/autonomous-agent.js"></script>
+
+  <!-- Page Logic -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      window.KallistoOS.renderSidebar('dashboard');
+      window.KallistoOS.renderTopbar('Mission Control');
+
+      renderDashboard();
+
+      // Hook simulation button
+      document.getElementById('btn-simulate-order')?.addEventListener('click', () => {
+        const result = window.KallistoAutonomousAgent.simulateIncomingOrder();
+        if (result && result.success) {
+          renderDashboard();
+        }
+      });
+
+      // Listen for reactive events
+      window.addEventListener('kallisto:stateSaved', () => renderDashboard());
+      window.addEventListener('kallisto:automationLogged', () => renderDashboard());
+    });
+
+    function renderDashboard() {
+      const state = window.KallistoOS.getState();
+      const pnl = window.KallistoForecastEngine.generateCurrentPnl();
+      const client = window.KallistoClients.getCurrentClient();
+      const weeklyLabour = window.KallistoRotaEngine.calculateWeeklyLabour(state.staff);
+      const projectedWeeklyRevenue = pnl.netSales / 4.33;
+      const labourEfficiency = window.KallistoRotaEngine.calculateLabourEfficiency(weeklyLabour.totalCost, projectedWeeklyRevenue);
+
+      // 1. Render KPI Metric Cards
+      const kpiContainer = document.getElementById('kpi-metrics-grid');
+      const lowStockCount = state.inventory.filter(i => i.stock <= i.minThreshold).length;
+      const activeOrdersCount = state.orders.filter(o => o.status !== 'dispatched').length;
+
+      kpiContainer.innerHTML = `
+        <div class="os-stat-card">
+          <div class="os-stat-label">Projected Net Monthly Sales</div>
+          <div class="os-stat-value">${pnl.currency}${pnl.netSales.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          <div class="os-stat-trend positive">
+            <span class="material-symbols-outlined text-[16px]">trending_up</span>
+            <span>+14.2% vs baseline</span>
+          </div>
+        </div>
+
+        <div class="os-stat-card">
+          <div class="os-stat-label">Gross Margin & Profit</div>
+          <div class="os-stat-value">${pnl.grossMarginPercent}%</div>
+          <div class="os-stat-trend positive">
+            <span>${pnl.currency}${pnl.grossProfit.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} GP</span>
+          </div>
+        </div>
+
+        <div class="os-stat-card">
+          <div class="os-stat-label">Labour Cost Efficiency</div>
+          <div class="os-stat-value" style="color: ${labourEfficiency.status === 'danger' ? 'var(--status-danger)' : 'var(--text-primary)'};">
+            ${labourEfficiency.ratioPercent}%
+          </div>
+          <div class="os-stat-trend ${labourEfficiency.status === 'danger' ? 'negative' : 'positive'}">
+            <span>Target: 22% - 28%</span>
+          </div>
+        </div>
+
+        <div class="os-stat-card">
+          <div class="os-stat-label">Live Orders & Low Stock</div>
+          <div class="os-stat-value">${activeOrdersCount} / ${lowStockCount} alert</div>
+          <div class="os-stat-trend ${lowStockCount > 0 ? 'negative' : 'positive'}">
+            <span>${lowStockCount > 0 ? 'PO drafts active' : 'Stock optimal'}</span>
+          </div>
+        </div>
+      `;
+
+      // 2. Render Live Orders Table
+      const ordersTbody = document.getElementById('dashboard-orders-tbody');
+      if (state.orders.length === 0) {
+        ordersTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No active orders in queue.</td></tr>`;
+      } else {
+        ordersTbody.innerHTML = state.orders.slice(0, 5).map(o => `
+          <tr>
+            <td style="font-family: var(--font-mono); font-weight: 600;">${window.KallistoOS.escapeHtml(o.id)}</td>
+            <td style="font-weight: 600;">${window.KallistoOS.escapeHtml(o.table)}</td>
+            <td>
+              <div style="font-size: 0.8125rem;">
+                ${window.KallistoOS.escapeHtml(o.items.map(i => `${i.qty}x ${i.name}`).join(', '))}
+              </div>
+            </td>
+            <td style="font-weight: 700; font-family: var(--font-mono);">${client.currency}${o.total.toFixed(2)}</td>
+            <td>
+              <span class="os-badge ${o.status === 'dispatched' ? 'os-badge-success' : (o.status === 'ready' ? 'os-badge-info' : 'os-badge-warning')}">
+                ${o.status.toUpperCase()}
+              </span>
+            </td>
+            <td>
+              ${o.status !== 'dispatched' ? `
+                <button type="button" class="os-btn os-btn-secondary os-btn-sm" onclick="advanceOrder('${window.KallistoOS.escapeHtml(o.id)}')">
+                  Advance
+                </button>
+              ` : `<span style="font-size: 0.75rem; color: var(--text-muted);">Completed</span>`}
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // 3. Render Invoices Table
+      const invTbody = document.getElementById('dashboard-invoices-tbody');
+      invTbody.innerHTML = state.invoices.slice(0, 5).map(inv => `
+        <tr>
+          <td style="font-family: var(--font-mono); font-weight: 600;">${inv.id}</td>
+          <td>
+            <div style="font-weight: 600;">${inv.clientName}</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">${inv.clientEmail}</div>
+          </td>
+          <td style="font-size: 0.8125rem;">${inv.dueDate}</td>
+          <td style="font-family: var(--font-mono);">${client.currency}${inv.vatAmount.toFixed(2)}</td>
+          <td style="font-family: var(--font-mono); font-weight: 700;">${client.currency}${inv.total.toFixed(2)}</td>
+          <td>
+            <span class="os-badge ${inv.status === 'paid' ? 'os-badge-success' : (inv.status === 'overdue' ? 'os-badge-danger' : 'os-badge-warning')}">
+              ${inv.status.toUpperCase()}
+            </span>
+          </td>
+        </tr>
+      `).join('');
+
+      // 4. Render Low Stock Items
+      const stockAlerts = document.getElementById('dashboard-stock-alerts');
+      const lowStockItems = state.inventory.filter(i => i.stock <= i.minThreshold);
+      if (lowStockItems.length === 0) {
+        stockAlerts.innerHTML = `
+          <div style="padding: 1rem; background: var(--status-success-bg); color: var(--status-success-text); border-radius: var(--radius-md); font-size: 0.8125rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            <span>All inventory items are above safety reorder thresholds.</span>
+          </div>
+        `;
+      } else {
+        stockAlerts.innerHTML = lowStockItems.map(item => `
+          <div style="padding: 0.875rem; border: 1px solid rgba(239, 68, 68, 0.2); background: var(--status-danger-bg); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div style="font-weight: 700; color: var(--status-danger-text); font-size: 0.875rem;">${item.name}</div>
+              <div style="font-size: 0.75rem; color: #7f1d1d;">
+                Stock: <strong>${item.stock} left</strong> (Min threshold: ${item.minThreshold})
+              </div>
+            </div>
+            <span class="os-badge os-badge-danger">Auto-PO Dispatched</span>
+          </div>
+        `).join('');
+      }
+
+      // 5. Render Automation Log Stream
+      const logsContainer = document.getElementById('dashboard-automation-logs');
+      logsContainer.innerHTML = state.automationLogs.slice(0, 8).map(log => `
+        <div class="automation-log-item">
+          <span class="automation-log-time">${window.KallistoOS.escapeHtml(log.time)}</span>
+          <div>
+            <div style="font-weight: 600; color: var(--text-primary); font-size: 0.75rem; text-transform: uppercase;">
+              ${window.KallistoOS.escapeHtml(log.event.replace(/_/g, ' '))}
+            </div>
+            <div style="color: var(--text-secondary); margin-top: 2px;">
+              ${window.KallistoOS.escapeHtml(log.detail)}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function advanceOrder(orderId) {
+      window.KallistoOrderEngine.advanceOrderStatus(orderId);
+      renderDashboard();
+    }
+  </script>
+</body>
+</html>

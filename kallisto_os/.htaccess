@@ -1,0 +1,15 @@
+# CLEVORISE OS demo: its pages use inline scripts/handlers, so it needs a looser
+# script policy than the marketing site. Everything else (no framing, no plugins,
+# same-origin data, HTTPS-only) stays strict. It contains no forms, and its service worker re-fetches
+# page resources (incl. Google Fonts), so connect-src also allows those two font hosts.
+<IfModule mod_headers.c>
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; form-action 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+
+  # The demo's scripts have no ?v= version strings (the marketing site's do), so the site-wide
+  # 1-month cache on .js would keep returning visitors on stale demo logic. Make the browser
+  # revalidate these files on every load (a cheap 304 when unchanged); the service worker
+  # still serves them offline.
+  <FilesMatch "\.(js|html|css|webmanifest)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
