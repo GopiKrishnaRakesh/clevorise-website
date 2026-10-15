@@ -1,0 +1,16 @@
+{
+  "name": "clevorise-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CLEVORISE website (clevorise.co.uk): static HTML/CSS/JS published with GitHub Pages. No build step.",
+  "homepage": "https://clevorise.co.uk",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GopiKrishnaRakesh/clevorise-website.git"
+  },
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "build": "echo \"Static site: no build step. Publish the repository root as-is.\""
+  }
+}

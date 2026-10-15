@@ -9,6 +9,10 @@
 hostinger_deploy/
 htaccess-upload.txt
 
+# Node tooling (the site itself has no dependencies)
+node_modules/
+npm-debug.log*
+
 # Working folders that don't belong on the site
 Posters/
 .gstack/
